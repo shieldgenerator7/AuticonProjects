@@ -19,7 +19,7 @@ class TodoApplicationTests {
 
     final String taskHeader = "buy groceries";
 
-    @Value(value="${local.server.port]")
+    @Value(value="${local.server.port}")
     private int port;
 
     @Autowired

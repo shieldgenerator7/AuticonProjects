@@ -13,6 +13,10 @@ public class Item {
 
     private String header;
 
+    public Item (){
+        header = "";
+    }
+
     public Item(String header) {
         this.header = header;
     }

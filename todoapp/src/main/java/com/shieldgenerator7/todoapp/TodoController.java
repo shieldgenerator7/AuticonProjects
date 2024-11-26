@@ -29,6 +29,7 @@ public class TodoController {
         TodoList todoList = repository.findAll().get(0);
         Item item = new Item(todo);
         todoList.add(item);
+        repository.save(todoList);
         return todo;
     }
 

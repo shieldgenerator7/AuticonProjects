@@ -12,7 +12,7 @@ public class TodoList {
     @GeneratedValue
     private Long id;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Item> todos = new ArrayList<>();
 
     public void add(Item item) {

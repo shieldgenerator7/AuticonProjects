@@ -13,22 +13,24 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 class TodoApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
-	@Test
-	void testAddItem(){
-		TodoList list = new TodoList();
-		assertEquals(0, list.getCount());
-		Item item = new Item(taskHeader);
-		assertEquals(taskHeader, item.getHeader());
-
-		list.add(item);
-		assertEquals(1, list.getCount());
-		assertEquals(taskHeader, list.getItem(0).getHeader());
-	}
     final String taskHeader = "buy groceries";
+
+    @Test
+    void contextLoads() {
+    }
+
+    @Test
+    void testAddItem() {
+        TodoList list = new TodoList();
+        assertEquals(0, list.getCount());
+        Item item = new Item(taskHeader);
+        assertEquals(taskHeader, item.getHeader());
+
+        list.add(item);
+        assertEquals(1, list.getCount());
+        assertEquals(taskHeader, list.getItem(0).getHeader());
+    }
+
     @Test
     void testController() {
         TodoController controller = new TodoController();

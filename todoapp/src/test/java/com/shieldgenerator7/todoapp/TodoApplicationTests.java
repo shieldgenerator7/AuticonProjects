@@ -54,7 +54,7 @@ class TodoApplicationTests {
         assertEquals(taskHeader, addedTodo);
 
         string = this.restTemplate.getForObject(url, String.class);
-        assertEquals("["+taskHeader+"]",string);
+        assertEquals("[\""+taskHeader+"\"]",string);
     }
 
 }

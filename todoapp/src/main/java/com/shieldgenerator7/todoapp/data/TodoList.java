@@ -8,19 +8,21 @@ public class TodoList {
     private List<Item> todos = new ArrayList<>();
 
     public void add(Item item){
-
+        if (!todos.contains(item)){
+            todos.add(item);
+        }
     }
 
     public List<Item> getTodos(){
-        return null;
+        return todos.subList(0, todos.size());
     }
 
     public int getCount(){
-        return 0;
+        return todos.size();
     }
 
     public Item getItem(int index){
-        return null;
+        return todos.get(index);
     }
 
 }

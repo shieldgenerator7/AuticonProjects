@@ -2,12 +2,14 @@ package com.shieldgenerator7.todoapp.data;
 
 public class Item {
 
-    public Item(String header){
+    private String header;
 
+    public Item(String header) {
+        this.header = header;
     }
 
-    public String getHeader(){
-        return "";
+    public String getHeader() {
+        return header;
     }
 
 }

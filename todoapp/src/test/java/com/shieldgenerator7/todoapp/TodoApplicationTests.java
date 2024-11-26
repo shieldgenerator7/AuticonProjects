@@ -43,17 +43,18 @@ class TodoApplicationTests {
 
     @Test
     void testController() {
-        TodoController controller = new TodoController();
-        List<String> todos = controller.getTodos();
-        assertNotNull(todos);
-        assertEquals(0, todos.size());
+        String url = "http://localhost:"+port+"/todos";
 
-        String addedTodo = controller.addTodo(taskHeader);
+        //test empty
+        String string = this.restTemplate.getForObject(url, String.class);
+        assertEquals("[]",string);
+
+        //test add
+        String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
         assertEquals(taskHeader, addedTodo);
-        todos = controller.getTodos();
-        assertNotNull(todos);
-        assertEquals(1, todos.size());
-        assertEquals(taskHeader, todos.get(0));
+
+        string = this.restTemplate.getForObject(url, String.class);
+        assertEquals("["+taskHeader+"]",string);
     }
 
 }

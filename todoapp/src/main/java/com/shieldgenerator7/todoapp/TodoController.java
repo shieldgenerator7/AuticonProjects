@@ -5,10 +5,12 @@ import com.shieldgenerator7.todoapp.data.TodoList;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RestController
 public class TodoController {
 
     private TodoList todoList = new TodoList();
@@ -24,6 +26,11 @@ public class TodoController {
         Item item = new Item(todo);
         todoList.add(item);
         return todo;
+    }
+
+    @GetMapping("/")
+    public String root(){
+        return "<h1>test list</h1>";
     }
 
 }

@@ -1,8 +1,6 @@
 package com.shieldgenerator7.todoapp.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +12,7 @@ public class TodoList {
     @GeneratedValue
     private Long id;
 
+    @OneToMany
     private List<Item> todos = new ArrayList<>();
 
     public void add(Item item) {

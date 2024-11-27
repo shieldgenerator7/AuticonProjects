@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,8 +39,31 @@ class TodoApplicationTests {
         String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
         assertEquals(taskHeader, addedTodo);
 
-        string = this.restTemplate.getForObject(url, String.class);
-        assertEquals("[\""+taskHeader+"\"]",string);
+        List<Item> itemList = this.restTemplate.getForObject(url, List.class);
+        assertEquals(1,itemList.size());
+    }
+
+    @Test
+    void testCompletionStatus(){
+        String url = "http://localhost:"+port+"/todos";
+        String urlIds = "http://localhost:"+port+"/todoIds";
+        String urlItem = "http://localhost:"+port+"/item";
+
+
+        String idList = this.restTemplate.getForObject(urlIds, String.class);
+        assertEquals("[1]",idList);//from previous test
+        int itemId = Integer.parseInt(
+                (String)Arrays.stream(idList.split("[,\\[\\]]"))
+                .filter(
+                        a->a.trim().length()>0
+                ).toArray()[0]
+        );
+        assertEquals(1,itemId);
+
+        Item item = this.restTemplate.getForObject(urlItem, Item.class, Map.of("id",itemId));
+        assertNotNull(item);
+        assertEquals(1, item.getId());
+
     }
 
 }

@@ -23,6 +23,10 @@ public class Item {
         this.header = header;
     }
 
+    public Long getId(){
+        return id;
+    }
+
     public String getHeader() {
         return header;
     }

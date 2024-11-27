@@ -39,4 +39,8 @@ public class TodoList {
         }
         return todos.stream().filter(i->id.equals(i.getId())).findFirst().get();
     }
+
+    public void removeById(Long itemId) {
+
+    }
 }

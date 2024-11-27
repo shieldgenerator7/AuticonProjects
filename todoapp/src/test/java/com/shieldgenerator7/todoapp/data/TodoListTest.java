@@ -59,4 +59,18 @@ class TodoListTest {
         assertNotNull(item1);
         assertEquals("buy eggs", item1.getHeader());
     }
+
+    @Test
+    void removeById() {
+        todoList.add(item);
+        assertEquals(1L, item.getId());
+        Item item1 = todoList.getItemById(1L);
+        assertNotNull(item1);
+        assertEquals("buy eggs", item1.getHeader());
+
+        todoList.removeById(item.getId());
+        item1 = todoList.getItemById(1L);
+        assertNull(item1);
+
+    }
 }

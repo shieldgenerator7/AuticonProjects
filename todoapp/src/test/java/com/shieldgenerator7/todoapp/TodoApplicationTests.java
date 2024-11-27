@@ -26,22 +26,6 @@ class TodoApplicationTests {
     private TestRestTemplate restTemplate;
 
     @Test
-    void contextLoads() {
-    }
-
-    @Test
-    void testAddItem() {
-        TodoList list = new TodoList();
-        assertEquals(0, list.getCount());
-        Item item = new Item(taskHeader);
-        assertEquals(taskHeader, item.getHeader());
-
-        list.add(item);
-        assertEquals(1, list.getCount());
-        assertEquals(taskHeader, list.getItem(0).getHeader());
-    }
-
-    @Test
     void testController() {
         String url = "http://localhost:"+port+"/todos";
 

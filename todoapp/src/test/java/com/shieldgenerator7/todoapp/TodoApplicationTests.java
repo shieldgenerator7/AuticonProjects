@@ -13,8 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TodoApplicationTests {
@@ -74,6 +73,32 @@ class TodoApplicationTests {
         assertEquals(100, completion);
         completion = this.restTemplate.getForObject(urlItemCompletion, int.class);
         assertEquals(100, completion);
+    }
+
+    @Test
+    void testDeletingTask(){
+        String urlItem = "http://localhost:"+port+"/item";
+        String urlIds = "http://localhost:"+port+"/todoIds";
+        String url = "http://localhost:"+port+"/todos";
+
+        String idList = this.restTemplate.getForObject(urlIds, String.class);
+        assertEquals("[1]",idList);//from previous test
+        Long itemId = Long.parseLong(
+                (String)Arrays.stream(idList.split("[,\\[\\]]"))
+                        .filter(
+                                a-> !a.trim().isEmpty()
+                        ).toArray()[0]
+        );
+        assertEquals(1L,itemId);
+
+        Item item = this.restTemplate.getForObject(urlItem+"/"+itemId, Item.class);
+        assertNotNull(item);
+        assertEquals(1L, item.getId());
+        assertEquals(taskHeader, item.getHeader());
+        this.restTemplate.delete(urlItem+"/"+itemId);
+        item = this.restTemplate.getForObject(urlItem+"/"+itemId, Item.class);
+        assertNull(item);
+
     }
 
 }

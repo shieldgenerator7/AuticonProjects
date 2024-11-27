@@ -48,22 +48,32 @@ class TodoApplicationTests {
         String url = "http://localhost:"+port+"/todos";
         String urlIds = "http://localhost:"+port+"/todoIds";
         String urlItem = "http://localhost:"+port+"/item";
+        String urlItemCompletion = "http://localhost:"+port+"/itemCompletion";
 
+        String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[1]",idList);//from previous test
-        int itemId = Integer.parseInt(
+        assertEquals("[1,2]",idList);//from previous test
+        Long itemId = Long.parseLong(
                 (String)Arrays.stream(idList.split("[,\\[\\]]"))
                 .filter(
-                        a->a.trim().length()>0
+                        a-> !a.trim().isEmpty()
                 ).toArray()[0]
         );
-        assertEquals(1,itemId);
+        assertEquals(1L,itemId);
 
-        Item item = this.restTemplate.getForObject(urlItem, Item.class, Map.of("id",itemId));
+        Item item = this.restTemplate.getForObject(urlItem+"/"+itemId, Item.class);
         assertNotNull(item);
-        assertEquals(1, item.getId());
+        assertEquals(1L, item.getId());
 
+        int completion = this.restTemplate.getForObject(urlItemCompletion+"?itemId="+itemId, int.class);
+        assertEquals(0, completion);
+
+        completion = 100;
+        completion = this.restTemplate.postForObject(urlItemCompletion+"?itemId="+itemId, completion, int.class);
+        assertEquals(100, completion);
+        completion = this.restTemplate.getForObject(urlItemCompletion+"?itemId="+itemId, int.class);
+        assertEquals(100, completion);
     }
 
 }

@@ -3,10 +3,7 @@ package com.shieldgenerator7.todoapp;
 import com.shieldgenerator7.todoapp.data.Item;
 import com.shieldgenerator7.todoapp.data.TodoList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +28,33 @@ public class TodoController {
         todoList.add(item);
         repository.save(todoList);
         return todo;
+    }
+
+    @GetMapping("/todoIds")
+    public List<Long> getTodoIds() {
+        TodoList todoList = repository.findAll().get(0);
+        return todoList.getTodos().stream()
+                .map(Item::getId).toList();
+    }
+
+    @GetMapping("/item/{itemId}")
+    public Item getItem(@PathVariable Long itemId) {
+        TodoList todoList = repository.findAll().get(0);
+        return todoList.getItemById(itemId);
+    }
+    @GetMapping("/itemCompletion")
+    public int getItemCompletion(@RequestParam(value="itemId") Long itemId) {
+        TodoList todoList = repository.findAll().get(0);
+        Item item = todoList.getItemById(itemId);
+        return item.getCompletionStatus();
+    }
+    @PostMapping("/itemCompletion")
+    public int updateItemCompletion(@RequestParam(value="itemId") Long itemId, @RequestBody int completionStatus) {
+        TodoList todoList = repository.findAll().get(0);
+        Item item = todoList.getItemById(itemId);
+        int completed = item.setCompletionStatus(completionStatus);
+        repository.save(todoList);
+        return completed;
     }
 
     @GetMapping("/")

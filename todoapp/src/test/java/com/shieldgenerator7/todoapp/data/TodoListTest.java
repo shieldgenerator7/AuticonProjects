@@ -10,11 +10,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class TodoListTest {
 
     TodoList todoList;
-    Item item = new Item("buy eggs");
+    Item item;
 
     @BeforeEach
     void setUp() {
         todoList = new TodoList();
+         item = new Item("buy eggs");
+         item._setId(1L);
     }
 
     @Test
@@ -52,6 +54,7 @@ class TodoListTest {
     @Test
     void getItemById() {
         todoList.add(item);
+        assertEquals(1L, item.getId());
         Item item1 = todoList.getItemById(1L);
         assertNotNull(item1);
         assertEquals("buy eggs", item1.getHeader());

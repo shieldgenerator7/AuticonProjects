@@ -39,4 +39,7 @@ public class Item {
         return completionStatus;
     }
 
+    public void _setId(long l) {
+        this.id = l;
+    }
 }

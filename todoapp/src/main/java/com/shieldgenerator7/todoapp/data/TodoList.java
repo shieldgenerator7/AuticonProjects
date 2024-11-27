@@ -34,6 +34,9 @@ public class TodoList {
     }
 
     public Item getItemById(Long id) {
-        return null;
+        if (id == null){
+            return null;
+        }
+        return todos.stream().filter(i->id.equals(i.getId())).findFirst().get();
     }
 }

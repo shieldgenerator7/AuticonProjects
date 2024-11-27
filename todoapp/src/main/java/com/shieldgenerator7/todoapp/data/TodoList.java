@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Entity
 public class TodoList {
@@ -34,10 +35,15 @@ public class TodoList {
     }
 
     public Item getItemById(Long id) {
-        if (id == null){
+        if (id == null) {
             return null;
         }
-        return todos.stream().filter(i->id.equals(i.getId())).findFirst().get();
+        try{
+            return todos.stream().filter(i -> id.equals(i.getId())).findFirst().get();
+        }
+        catch (NoSuchElementException nsee){
+            return null;
+        }
     }
 
     public void removeById(Long itemId) {

@@ -48,7 +48,6 @@ class TodoApplicationTests {
         String url = "http://localhost:"+port+"/todos";
         String urlIds = "http://localhost:"+port+"/todoIds";
         String urlItem = "http://localhost:"+port+"/item";
-        String urlItemCompletion = "http://localhost:"+port+"/itemCompletion";
 
         String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
 
@@ -61,18 +60,19 @@ class TodoApplicationTests {
                 ).toArray()[0]
         );
         assertEquals(1L,itemId);
+        String urlItemCompletion = "http://localhost:"+port+"/item/"+itemId+"/completion";
 
         Item item = this.restTemplate.getForObject(urlItem+"/"+itemId, Item.class);
         assertNotNull(item);
         assertEquals(1L, item.getId());
 
-        int completion = this.restTemplate.getForObject(urlItemCompletion+"?itemId="+itemId, int.class);
+        int completion = this.restTemplate.getForObject(urlItemCompletion, int.class);
         assertEquals(0, completion);
 
         completion = 100;
-        completion = this.restTemplate.postForObject(urlItemCompletion+"?itemId="+itemId, completion, int.class);
+        completion = this.restTemplate.postForObject(urlItemCompletion, completion, int.class);
         assertEquals(100, completion);
-        completion = this.restTemplate.getForObject(urlItemCompletion+"?itemId="+itemId, int.class);
+        completion = this.restTemplate.getForObject(urlItemCompletion, int.class);
         assertEquals(100, completion);
     }
 

@@ -42,14 +42,14 @@ public class TodoController {
         TodoList todoList = repository.findAll().get(0);
         return todoList.getItemById(itemId);
     }
-    @GetMapping("/itemCompletion")
-    public int getItemCompletion(@RequestParam(value="itemId") Long itemId) {
+    @GetMapping("/item/{itemId}/completion")
+    public int getItemCompletion(@PathVariable Long itemId) {
         TodoList todoList = repository.findAll().get(0);
         Item item = todoList.getItemById(itemId);
         return item.getCompletionStatus();
     }
-    @PostMapping("/itemCompletion")
-    public int updateItemCompletion(@RequestParam(value="itemId") Long itemId, @RequestBody int completionStatus) {
+    @PostMapping("/item/{itemId}/completion")
+    public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) {
         TodoList todoList = repository.findAll().get(0);
         Item item = todoList.getItemById(itemId);
         int completed = item.setCompletionStatus(completionStatus);

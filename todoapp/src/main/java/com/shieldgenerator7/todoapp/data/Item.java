@@ -31,7 +31,7 @@ public class Item {
         return completionStatus;
     }
     public int setCompletionStatus(int value){
-        completionStatus = value;
+        completionStatus = Math.min(Math.max(value, 0), 100);
         return completionStatus;
     }
 

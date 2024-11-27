@@ -20,48 +20,49 @@ class TodoApplicationTests {
 
     final String taskHeader = "buy groceries";
 
-    @Value(value="${local.server.port}")
+    @Value(value = "${local.server.port}")
     private int port;
 
     @Autowired
     private TestRestTemplate restTemplate;
+    private Item item;
 
     @Test
     void testController() {
-        String url = "http://localhost:"+port+"/todos";
+        String url = "http://localhost:" + port + "/todos";
 
         //test empty
         String string = this.restTemplate.getForObject(url, String.class);
-        assertEquals("[]",string);
+        assertEquals("[]", string);
 
         //test add
         String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
         assertEquals(taskHeader, addedTodo);
 
         List<Item> itemList = this.restTemplate.getForObject(url, List.class);
-        assertEquals(1,itemList.size());
+        assertEquals(1, itemList.size());
     }
 
     @Test
-    void testCompletionStatus(){
-        String url = "http://localhost:"+port+"/todos";
-        String urlIds = "http://localhost:"+port+"/todoIds";
-        String urlItem = "http://localhost:"+port+"/item";
+    void testCompletionStatus() {
+        String url = "http://localhost:" + port + "/todos";
+        String urlIds = "http://localhost:" + port + "/todoIds";
+        String urlItem = "http://localhost:" + port + "/item";
 
         String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[2]",idList);//from previous test
+        assertEquals("[2]", idList);//from previous test
         Long itemId = Long.parseLong(
-                (String)Arrays.stream(idList.split("[,\\[\\]]"))
-                .filter(
-                        a-> !a.trim().isEmpty()
-                ).toArray()[0]
+                (String) Arrays.stream(idList.split("[,\\[\\]]"))
+                        .filter(
+                                a -> !a.trim().isEmpty()
+                        ).toArray()[0]
         );
-        assertEquals(2L,itemId);
-        String urlItemCompletion = "http://localhost:"+port+"/item/"+itemId+"/completion";
+        assertEquals(2L, itemId);
+        String urlItemCompletion = "http://localhost:" + port + "/item/" + itemId + "/completion";
 
-        Item item = this.restTemplate.getForObject(urlItem+"/"+itemId, Item.class);
+        Item item = this.restTemplate.getForObject(urlItem + "/" + itemId, Item.class);
         assertNotNull(item);
         assertEquals(2L, item.getId());
 
@@ -76,27 +77,27 @@ class TodoApplicationTests {
     }
 
     @Test
-    void testDeletingTask(){
-        String urlItem = "http://localhost:"+port+"/item";
-        String urlIds = "http://localhost:"+port+"/todoIds";
-        String url = "http://localhost:"+port+"/todos";
+    void testDeletingTask() {
+        String urlItem = "http://localhost:" + port + "/item";
+        String urlIds = "http://localhost:" + port + "/todoIds";
+        String url = "http://localhost:" + port + "/todos";
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[1]",idList);//from previous test
+        assertEquals("[1]", idList);//from previous test
         Long itemId = Long.parseLong(
-                (String)Arrays.stream(idList.split("[,\\[\\]]"))
+                (String) Arrays.stream(idList.split("[,\\[\\]]"))
                         .filter(
-                                a-> !a.trim().isEmpty()
+                                a -> !a.trim().isEmpty()
                         ).toArray()[0]
         );
-        assertEquals(1L,itemId);
+        assertEquals(1L, itemId);
 
-        Item item = this.restTemplate.getForObject(urlItem+"/"+itemId, Item.class);
+        Item item = this.restTemplate.getForObject(urlItem + "/" + itemId, Item.class);
         assertNotNull(item);
         assertEquals(1L, item.getId());
         assertEquals(taskHeader, item.getHeader());
-        this.restTemplate.delete(urlItem+"/"+itemId);
-        item = this.restTemplate.getForObject(urlItem+"/"+itemId, Item.class);
+        this.restTemplate.delete(urlItem + "/" + itemId);
+        item = this.restTemplate.getForObject(urlItem + "/" + itemId, Item.class);
         assertNull(item);
 
     }

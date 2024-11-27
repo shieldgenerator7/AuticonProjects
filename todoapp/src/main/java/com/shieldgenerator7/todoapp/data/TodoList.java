@@ -38,17 +38,16 @@ public class TodoList {
         if (id == null) {
             return null;
         }
-        try{
+        try {
             return todos.stream().filter(i -> id.equals(i.getId())).findFirst().get();
-        }
-        catch (NoSuchElementException nsee){
+        } catch (NoSuchElementException nsee) {
             return null;
         }
     }
 
     public void removeById(Long itemId) {
         Item item = getItemById(itemId);
-        if (item != null){
+        if (item != null) {
             todos.remove(item);
         }
     }

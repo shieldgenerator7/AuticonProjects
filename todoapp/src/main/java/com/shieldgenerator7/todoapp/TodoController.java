@@ -44,7 +44,7 @@ public class TodoController {
     }
 
     @DeleteMapping("item/{itemId}")
-    public void deleteItem(@PathVariable Long itemId){
+    public void deleteItem(@PathVariable Long itemId) {
         TodoList todoList = repository.findAll().get(0);
         todoList.removeById(itemId);
         repository.save(todoList);
@@ -57,6 +57,7 @@ public class TodoController {
         Item item = todoList.getItemById(itemId);
         return item.getCompletionStatus();
     }
+
     @PostMapping("/item/{itemId}/completion")
     public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) {
         TodoList todoList = repository.findAll().get(0);
@@ -67,7 +68,7 @@ public class TodoController {
     }
 
     @GetMapping("/")
-    public String root(){
+    public String root() {
         return "<h1>test list</h1>";
     }
 

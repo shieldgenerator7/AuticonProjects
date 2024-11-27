@@ -15,8 +15,8 @@ class TodoListTest {
     @BeforeEach
     void setUp() {
         todoList = new TodoList();
-         item = new Item("buy eggs");
-         item._setId(1L);
+        item = new Item("buy eggs");
+        item._setId(1L);
     }
 
     @Test
@@ -44,7 +44,7 @@ class TodoListTest {
 
     @Test
     void getItem() {
-        assertThrows(IndexOutOfBoundsException.class, ()->todoList.getItem(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> todoList.getItem(0));
         todoList.add(item);
         Item item1 = todoList.getItem(0);
         assertNotNull(item1);

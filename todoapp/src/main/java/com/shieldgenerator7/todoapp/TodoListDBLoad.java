@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TodoListDBLoad {
     @Bean
-    CommandLineRunner initDatabase(TodoListRepository repository){
-        return args->{
+    CommandLineRunner initDatabase(TodoListRepository repository) {
+        return args -> {
             repository.save(new TodoList());
         };
     }

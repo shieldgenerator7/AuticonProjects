@@ -41,6 +41,9 @@ public class TodoList {
     }
 
     public void removeById(Long itemId) {
-
+        Item item = getItemById(itemId);
+        if (item != null){
+            todos.remove(item);
+        }
     }
 }

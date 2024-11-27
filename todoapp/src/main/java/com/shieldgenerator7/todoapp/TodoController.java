@@ -42,6 +42,15 @@ public class TodoController {
         TodoList todoList = repository.findAll().get(0);
         return todoList.getItemById(itemId);
     }
+
+    @DeleteMapping("item/{itemId}")
+    public void deleteItem(@PathVariable Long itemId){
+        TodoList todoList = repository.findAll().get(0);
+        todoList.removeById(itemId);
+        repository.save(todoList);
+    }
+
+
     @GetMapping("/item/{itemId}/completion")
     public int getItemCompletion(@PathVariable Long itemId) {
         TodoList todoList = repository.findAll().get(0);

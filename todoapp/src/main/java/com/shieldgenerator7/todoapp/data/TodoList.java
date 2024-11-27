@@ -33,4 +33,7 @@ public class TodoList {
         return todos.get(index);
     }
 
+    public Item getItemById(Long id) {
+        return null;
+    }
 }

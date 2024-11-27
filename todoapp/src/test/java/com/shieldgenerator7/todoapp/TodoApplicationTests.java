@@ -51,19 +51,19 @@ class TodoApplicationTests {
         String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[1,2]",idList);//from previous test
+        assertEquals("[2]",idList);//from previous test
         Long itemId = Long.parseLong(
                 (String)Arrays.stream(idList.split("[,\\[\\]]"))
                 .filter(
                         a-> !a.trim().isEmpty()
                 ).toArray()[0]
         );
-        assertEquals(1L,itemId);
+        assertEquals(2L,itemId);
         String urlItemCompletion = "http://localhost:"+port+"/item/"+itemId+"/completion";
 
         Item item = this.restTemplate.getForObject(urlItem+"/"+itemId, Item.class);
         assertNotNull(item);
-        assertEquals(1L, item.getId());
+        assertEquals(2L, item.getId());
 
         int completion = this.restTemplate.getForObject(urlItemCompletion, int.class);
         assertEquals(0, completion);

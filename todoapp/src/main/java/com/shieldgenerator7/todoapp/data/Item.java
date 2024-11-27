@@ -13,6 +13,8 @@ public class Item {
 
     private String header;
 
+    private int completionStatus = 0;
+
     public Item (){
         header = "";
     }
@@ -23,6 +25,14 @@ public class Item {
 
     public String getHeader() {
         return header;
+    }
+
+    public int getCompletionStatus(){
+        return completionStatus;
+    }
+    public int setCompletionStatus(int value){
+        completionStatus = value;
+        return completionStatus;
     }
 
 }

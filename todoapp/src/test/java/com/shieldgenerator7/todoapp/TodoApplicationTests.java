@@ -110,4 +110,36 @@ class TodoApplicationTests {
 
     }
 
+    @Test
+    void testSettingPriority(){
+        String urlItem = baseURL + "/item";
+        String urlIds = baseURL + "/todoIds";
+        String url = baseURL + "/todos";
+        String urlPriority = baseURL + "/priority";
+
+        //setup
+        String idList = this.restTemplate.getForObject(urlIds, String.class);
+        assertEquals("[2]", idList);//from previous test
+        Long itemId = Long.parseLong(
+                (String) Arrays.stream(idList.split("[,\\[\\]]"))
+                        .filter(
+                                a -> !a.trim().isEmpty()
+                        ).toArray()[0]
+        );
+        assertEquals(2L, itemId);
+
+        //get priority
+        String urlItemPriority = baseURL + "/item/" + itemId + "/priority";
+        Item.Priority priority = this.restTemplate.getForObject(urlItemPriority, Item.Priority.class);
+        assertEquals(Item.Priority.LOW, priority);
+
+        //set priority
+        this.restTemplate.postForObject(urlItemPriority, Item.Priority.HIGH, Item.Priority.class);
+        priority = this.restTemplate.getForObject(urlItemPriority, Item.Priority.class);
+        assertEquals(Item.Priority.HIGH, priority);
+
+
+
+    }
+
 }

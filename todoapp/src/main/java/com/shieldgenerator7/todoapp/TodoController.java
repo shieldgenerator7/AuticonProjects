@@ -67,6 +67,21 @@ public class TodoController {
         return completed;
     }
 
+    @GetMapping("/item/{itemId}/priority")
+    public Item.Priority getItemPriority(@PathVariable Long itemId) {
+        TodoList todoList = repository.findAll().get(0);
+        Item item = todoList.getItemById(itemId);
+        return item.getPriority();
+    }
+
+    @PostMapping("/item/{itemId}/priority")
+    public void updateItemPriority(@PathVariable Long itemId, @RequestBody Item.Priority priority) {
+        TodoList todoList = repository.findAll().get(0);
+        Item item = todoList.getItemById(itemId);
+        item.setPriority(priority);
+        repository.save(todoList);
+    }
+
     @GetMapping("/")
     public String root() {
         return "<h1>test list</h1>";

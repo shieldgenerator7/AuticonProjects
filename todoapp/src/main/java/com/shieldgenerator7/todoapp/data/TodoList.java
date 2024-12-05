@@ -5,9 +5,12 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Entity
 public class TodoList {
+
+    private static int MAX_HEADER_LENGTH = 100;
 
     @Id
     @GeneratedValue
@@ -21,6 +24,16 @@ public class TodoList {
 
         //not empty
         if (itemHeader == null || itemHeader.trim().isEmpty()){
+            return;
+        }
+
+        //header length
+        if (itemHeader.length() > MAX_HEADER_LENGTH){
+            return;
+        }
+
+        //no duplicates
+        if (todos.stream().anyMatch(todo-> todo.getHeader().equals(itemHeader))){
             return;
         }
 

@@ -84,6 +84,11 @@ class TodoListTest {
         todoList.add("");
         assertEquals(count, todoList.getCount());
                 },
+                ()->{//
+                    int count = todoList.getCount();
+                    todoList.add(" ");
+                    assertEquals(count, todoList.getCount());
+                },//
                 ()->{
         int count = todoList.getCount();
         todoList.add((String)null);

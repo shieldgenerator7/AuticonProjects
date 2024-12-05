@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 @Entity
 public class TodoList {
@@ -85,5 +86,12 @@ public class TodoList {
         if (item != null) {
             todos.remove(item);
         }
+    }
+
+    public List<Item> searchItems(String query){
+        return null;
+    }
+    public List<Item> searchItems(Predicate<Item> searchFunc){
+        return null;
     }
 }

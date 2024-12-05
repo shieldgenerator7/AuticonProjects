@@ -3,6 +3,8 @@ package com.shieldgenerator7.todoapp.data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -132,5 +134,37 @@ class TodoListTest {
         assertEquals(1, todoList.getCount());
         todoList.add("buy eggs");
         assertEquals(1, todoList.getCount());
+    }
+
+    @Test
+    void searchItems(){
+        List<String> itemHeaders = Arrays.asList(
+                "buy eggs",
+                "buy milk",
+                "take a shower"
+        );
+        itemHeaders.forEach(header->todoList.add(header));
+        assertEquals(3, todoList.getCount());
+        String query = "buy";
+
+        assertAll(
+                ()->{
+                    //search predicate
+                    List<Item> searchResults = todoList.searchItems(item->item.getHeader().contains(query));
+                    assertNotNull(searchResults);
+                    assertEquals(2, searchResults.size());
+                    assertEquals(itemHeaders.get(0), searchResults.get(0).getHeader());
+                    assertEquals(itemHeaders.get(1), searchResults.get(1).getHeader());
+                },
+                ()->{
+                    //search string
+                    List<Item> searchResults = todoList.searchItems(query);
+                    assertNotNull(searchResults);
+                    assertEquals(2, searchResults.size());
+                    assertEquals(itemHeaders.get(0), searchResults.get(0).getHeader());
+                    assertEquals(itemHeaders.get(1), searchResults.get(1).getHeader());
+                }
+        );
+
     }
 }

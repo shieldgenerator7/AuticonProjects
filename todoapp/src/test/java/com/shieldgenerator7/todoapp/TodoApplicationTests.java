@@ -1,5 +1,6 @@
 package com.shieldgenerator7.todoapp;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shieldgenerator7.todoapp.data.Item;
 import com.shieldgenerator7.todoapp.data.TodoList;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +58,7 @@ class TodoApplicationTests {
         String urlIds = baseURL + "/todoIds";
         String urlItem = baseURL + "/item";
 
-        String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
+        String addedTodo = this.restTemplate.postForObject(url, "buy eggs", String.class);
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
         assertEquals("[2]", idList);//from previous test
@@ -119,7 +120,7 @@ class TodoApplicationTests {
 
         //setup
         String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[2]", idList);//from previous test
+        assertEquals("[2,3,4]", idList);//from previous test
         Long itemId = Long.parseLong(
                 (String) Arrays.stream(idList.split("[,\\[\\]]"))
                         .filter(
@@ -138,8 +139,31 @@ class TodoApplicationTests {
         priority = this.restTemplate.getForObject(urlItemPriority, Item.Priority.class);
         assertEquals(Item.Priority.HIGH, priority);
 
+    }
 
+    @Test
+    void testSearch(){
+        String urlItem = baseURL + "/item";
+        String urlIds = baseURL + "/todoIds";
+        String url = baseURL + "/todos";
+        String urlSearch = baseURL + "/search";
 
+        //setup
+        this.restTemplate.postForObject(url, "take a shower", String.class);
+        this.restTemplate.postForObject(url, "buy eggs", String.class);
+        this.restTemplate.postForObject(url, "buy groceries", String.class);
+        String idList = this.restTemplate.getForObject(urlIds, String.class);
+        assertEquals("[2,3,4]", idList);//from previous test
+
+        //search
+        String query = "buy";//+"?title="+query
+        List result = this.restTemplate.getForObject(urlSearch+"?title="+query, List.class);
+        assertNotNull(result);
+        ObjectMapper mapper = new ObjectMapper();
+        List<Item> searchItems = result.stream().map(item-> mapper.convertValue(item, Item.class)).toList();
+        assertEquals(2, searchItems.size());
+        assertEquals("buy eggs", searchItems.get(0).getHeader());
+        assertEquals("buy groceries", searchItems.get(1).getHeader());
     }
 
 }

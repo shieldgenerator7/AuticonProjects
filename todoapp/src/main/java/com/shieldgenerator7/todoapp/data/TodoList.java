@@ -89,9 +89,9 @@ public class TodoList {
     }
 
     public List<Item> searchItems(String query){
-        return null;
+        return searchItems(item->item.getHeader().contains(query));
     }
     public List<Item> searchItems(Predicate<Item> searchFunc){
-        return null;
+        return todos.stream().filter(searchFunc).toList();
     }
 }

@@ -16,6 +16,13 @@ public class TodoList {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Item> todos = new ArrayList<>();
 
+    public void add(String itemHeader){
+        //validation
+        //add
+        Item item = new Item(itemHeader);
+        todos.add(item);
+    }
+
     public void add(Item item) {
         if (!todos.contains(item)) {
             todos.add(item);

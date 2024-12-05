@@ -24,6 +24,8 @@ class TodoListTest {
         assertEquals(0, todoList.getCount());
         todoList.add(item);
         assertEquals(1, todoList.getCount());
+        todoList.add("buy milk");
+        assertEquals(2, todoList.getCount());
     }
 
     @Test
@@ -72,5 +74,37 @@ class TodoListTest {
         item1 = todoList.getItemById(1L);
         assertNull(item1);
 
+    }
+
+    @Test
+    void validateNonEmpty(){
+        assertEquals(0, todoList.getCount());
+        todoList.add("");
+        assertEquals(0, todoList.getCount());
+        todoList.add((String)null);
+        assertEquals(0, todoList.getCount());
+        todoList.add((Item)null);
+        assertEquals(0, todoList.getCount());
+    }
+
+    @Test
+    void validateMaxLength(){
+        assertEquals(0, todoList.getCount());
+        //2024-12-04: copied from https://www.lipsum.com/
+        todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+        assertEquals(0, todoList.getCount());
+        todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore ");//100 characters: YES
+        assertEquals(1, todoList.getCount());
+        todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore e");//101 characters: NO
+        assertEquals(1, todoList.getCount());
+    }
+
+    @Test
+    void validateNoDuplicates(){
+        assertEquals(0, todoList.getCount());
+        todoList.add("buy eggs");
+        assertEquals(1, todoList.getCount());
+        todoList.add("buy eggs");
+        assertEquals(1, todoList.getCount());
     }
 }

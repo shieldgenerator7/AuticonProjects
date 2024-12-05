@@ -24,8 +24,7 @@ public class TodoController {
     @PostMapping("/todos")
     public String addTodo(@RequestBody String todo) {
         TodoList todoList = repository.findAll().get(0);
-        Item item = new Item(todo);
-        todoList.add(item);
+        todoList.add(todo);
         repository.save(todoList);
         return todo;
     }

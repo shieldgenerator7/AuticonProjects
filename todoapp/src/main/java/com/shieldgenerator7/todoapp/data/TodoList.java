@@ -18,15 +18,30 @@ public class TodoList {
 
     public void add(String itemHeader){
         //validation
+
+        //not empty
+        if (itemHeader == null || itemHeader.trim().isEmpty()){
+            return;
+        }
+
         //add
         Item item = new Item(itemHeader);
         todos.add(item);
     }
 
     public void add(Item item) {
-        if (!todos.contains(item)) {
-            todos.add(item);
+
+        //validate: not empty
+        if (item == null){
+            return;
         }
+
+        //validate: not duplicate
+        if (todos.contains(item)) {
+            return;
+        }
+
+            todos.add(item);
     }
 
     public List<Item> getTodos() {

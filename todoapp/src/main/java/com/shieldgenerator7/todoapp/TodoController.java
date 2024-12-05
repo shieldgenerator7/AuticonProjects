@@ -36,6 +36,13 @@ public class TodoController {
                 .map(Item::getId).toList();
     }
 
+    @GetMapping("/search")
+    public List<Item> searchTodoIds(@RequestParam(value="title") String query) {
+        System.out.println("======== "+query+" ===============");
+        TodoList todoList = repository.findAll().get(0);
+        return todoList.searchItems(query);
+    }
+
     @GetMapping("/item/{itemId}")
     public Item getItem(@PathVariable Long itemId) {
         TodoList todoList = repository.findAll().get(0);

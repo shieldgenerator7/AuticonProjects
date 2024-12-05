@@ -43,4 +43,11 @@ class ItemTest {
                 () -> assertEquals(100, item.setCompletionStatus(100))
         );
     }
+
+    @Test
+    void setPriority(){
+        assertEquals(Item.Priority.LOW, item.getPriority());
+        item.setPriority(Item.Priority.HIGH);
+        assertEquals(Item.Priority.HIGH, item.getPriority());
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 public class Item {
@@ -18,12 +19,23 @@ public class Item {
     @Getter
     private int completionStatus = 0;
 
+    public enum Priority{
+        LOW,
+        MEDIUM,
+        HIGH,
+    }
+    @Getter
+    @Setter
+    private Priority priority;
+
     public Item (){
         header = "";
+        priority = Priority.LOW;
     }
 
     public Item(String header) {
         this.header = header;
+        priority = Priority.LOW;
     }
 
     public Long getId(){

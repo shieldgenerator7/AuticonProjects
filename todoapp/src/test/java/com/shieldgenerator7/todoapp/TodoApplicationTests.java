@@ -2,6 +2,7 @@ package com.shieldgenerator7.todoapp;
 
 import com.shieldgenerator7.todoapp.data.Item;
 import com.shieldgenerator7.todoapp.data.TodoList;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ class TodoApplicationTests {
 
     final String taskHeader = "buy groceries";
 
+    String baseURL;
+
     @Value(value = "${local.server.port}")
     private int port;
 
@@ -27,9 +30,14 @@ class TodoApplicationTests {
     private TestRestTemplate restTemplate;
     private Item item;
 
+    @BeforeEach
+    void initTests(){
+        baseURL = "http://localhost:" + port;
+    }
+
     @Test
     void testController() {
-        String url = "http://localhost:" + port + "/todos";
+        String url = baseURL + "/todos";
 
         //test empty
         String string = this.restTemplate.getForObject(url, String.class);
@@ -45,9 +53,9 @@ class TodoApplicationTests {
 
     @Test
     void testCompletionStatus() {
-        String url = "http://localhost:" + port + "/todos";
-        String urlIds = "http://localhost:" + port + "/todoIds";
-        String urlItem = "http://localhost:" + port + "/item";
+        String url = baseURL + "/todos";
+        String urlIds = baseURL + "/todoIds";
+        String urlItem = baseURL + "/item";
 
         String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
 
@@ -60,7 +68,7 @@ class TodoApplicationTests {
                         ).toArray()[0]
         );
         assertEquals(2L, itemId);
-        String urlItemCompletion = "http://localhost:" + port + "/item/" + itemId + "/completion";
+        String urlItemCompletion = baseURL + "/item/" + itemId + "/completion";
 
         Item item = this.restTemplate.getForObject(urlItem + "/" + itemId, Item.class);
         assertNotNull(item);
@@ -78,9 +86,9 @@ class TodoApplicationTests {
 
     @Test
     void testDeletingTask() {
-        String urlItem = "http://localhost:" + port + "/item";
-        String urlIds = "http://localhost:" + port + "/todoIds";
-        String url = "http://localhost:" + port + "/todos";
+        String urlItem = baseURL + "/item";
+        String urlIds = baseURL + "/todoIds";
+        String url = baseURL + "/todos";
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
         assertEquals("[1]", idList);//from previous test

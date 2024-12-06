@@ -33,12 +33,12 @@ class TodoApplicationTests {
 
     @BeforeEach
     void initTests(){
-        baseURL = "http://localhost:" + port;
+        baseURL = "http://localhost:" + port + "/todos";
     }
 
     @Test
     void testController() {
-        String url = baseURL + "/todos";
+        String url = baseURL;
 
         //test empty
         String string = this.restTemplate.getForObject(url, String.class);
@@ -54,8 +54,8 @@ class TodoApplicationTests {
 
     @Test
     void testCompletionStatus() {
-        String url = baseURL + "/todos";
-        String urlIds = baseURL + "/todoIds";
+        String url = baseURL;
+        String urlIds = baseURL + "/ids";
         String urlItem = baseURL + "/item";
 
         String addedTodo = this.restTemplate.postForObject(url, "buy eggs", String.class);
@@ -88,8 +88,8 @@ class TodoApplicationTests {
     @Test
     void testDeletingTask() {
         String urlItem = baseURL + "/item";
-        String urlIds = baseURL + "/todoIds";
-        String url = baseURL + "/todos";
+        String urlIds = baseURL + "/ids";
+        String url = baseURL;
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
         assertEquals("[1]", idList);//from previous test
@@ -114,8 +114,8 @@ class TodoApplicationTests {
     @Test
     void testSettingPriority(){
         String urlItem = baseURL + "/item";
-        String urlIds = baseURL + "/todoIds";
-        String url = baseURL + "/todos";
+        String urlIds = baseURL + "/ids";
+        String url = baseURL;
         String urlPriority = baseURL + "/priority";
 
         //setup
@@ -144,8 +144,8 @@ class TodoApplicationTests {
     @Test
     void testSearch(){
         String urlItem = baseURL + "/item";
-        String urlIds = baseURL + "/todoIds";
-        String url = baseURL + "/todos";
+        String urlIds = baseURL + "/ids";
+        String url = baseURL;
         String urlSearch = baseURL + "/search";
 
         //setup

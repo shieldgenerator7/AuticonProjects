@@ -31,6 +31,8 @@ class TodoApplicationTests {
     private TestRestTemplate restTemplate;
     private Item item;
 
+    List<Long> idList;
+
     @BeforeEach
     void initTests(){
         baseURL = "http://localhost:" + port + "/todos";
@@ -42,7 +44,7 @@ class TodoApplicationTests {
         String urlIds = baseURL + "/ids";
         String idListString = this.restTemplate.getForObject(urlIds, String.class);
         ObjectMapper mapper = new ObjectMapper();
-        List<Integer> idList = mapper.readValue(idListString, new TypeReference<List<Integer>>() {});
+        List<Long> idList = mapper.readValue(idListString, new TypeReference<List<Long>>() {});
         idList.forEach(id->{
             this.restTemplate.delete(urlItem + "/" + id);
         });
@@ -50,9 +52,22 @@ class TodoApplicationTests {
 
     void _addTestItems(){
         String url = baseURL;
+        String urlIds = baseURL + "/ids";
+
+        //add items
         this.restTemplate.postForObject(url, "take a shower", String.class);
         this.restTemplate.postForObject(url, "buy eggs", String.class);
         this.restTemplate.postForObject(url, "buy groceries", String.class);
+
+        //update item id list
+        try {
+            idList = null;
+            String idListString = this.restTemplate.getForObject(urlIds, String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            idList = mapper.readValue(idListString, new TypeReference<List<Long>>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test

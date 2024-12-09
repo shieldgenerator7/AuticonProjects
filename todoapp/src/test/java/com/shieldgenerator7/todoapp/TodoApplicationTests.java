@@ -1,10 +1,11 @@
 package com.shieldgenerator7.todoapp;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shieldgenerator7.todoapp.data.Item;
-import com.shieldgenerator7.todoapp.data.TodoList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,6 +34,18 @@ class TodoApplicationTests {
     @BeforeEach
     void initTests(){
         baseURL = "http://localhost:" + port + "/todos";
+    }
+
+    @AfterEach
+    void cleanupTests() throws JsonProcessingException {
+        String urlItem = baseURL + "/item";
+        String urlIds = baseURL + "/ids";
+        String idListString = this.restTemplate.getForObject(urlIds, String.class);
+        ObjectMapper mapper = new ObjectMapper();
+        List<Integer> idList = mapper.readValue(idListString, new TypeReference<List<Integer>>() {});
+        idList.forEach(id->{
+            this.restTemplate.delete(urlItem + "/" + id);
+        });
     }
 
     @Test

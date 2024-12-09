@@ -45,7 +45,7 @@ class ItemTest {
     }
 
     @Test
-    void setPriority(){
+    void setPriority() {
         assertEquals(Item.Priority.LOW, item.getPriority());
         item.setPriority(Item.Priority.HIGH);
         assertEquals(Item.Priority.HIGH, item.getPriority());

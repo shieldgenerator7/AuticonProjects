@@ -79,56 +79,56 @@ class TodoListTest {
     }
 
     @Test
-    void validateNonEmpty(){
+    void validateNonEmpty() {
         assertAll(
-                ()->{
-        int count = todoList.getCount();
-        todoList.add("");
-        assertEquals(count, todoList.getCount());
+                () -> {
+                    int count = todoList.getCount();
+                    todoList.add("");
+                    assertEquals(count, todoList.getCount());
                 },
-                ()->{//
+                () -> {//
                     int count = todoList.getCount();
                     todoList.add(" ");
                     assertEquals(count, todoList.getCount());
                 },//
-                ()->{
-        int count = todoList.getCount();
-        todoList.add((String)null);
-        assertEquals(count, todoList.getCount());
+                () -> {
+                    int count = todoList.getCount();
+                    todoList.add((String) null);
+                    assertEquals(count, todoList.getCount());
                 },
-                ()->{
-        int count = todoList.getCount();
-        todoList.add((Item)null);
-        assertEquals(count, todoList.getCount());
+                () -> {
+                    int count = todoList.getCount();
+                    todoList.add((Item) null);
+                    assertEquals(count, todoList.getCount());
                 }
         );
     }
 
     @Test
-    void validateMaxLength(){
+    void validateMaxLength() {
         assertEquals(0, todoList.getCount());
         //2024-12-04: copied from https://www.lipsum.com/
         assertAll(
-                ()->{
-        int count = todoList.getCount();
-        todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-        assertEquals(count, todoList.getCount());
+                () -> {
+                    int count = todoList.getCount();
+                    todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+                    assertEquals(count, todoList.getCount());
                 },
-                ()->{
-        int count = todoList.getCount();
-        todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore ");//100 characters: YES
-        assertEquals(count + 1, todoList.getCount());
+                () -> {
+                    int count = todoList.getCount();
+                    todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore ");//100 characters: YES
+                    assertEquals(count + 1, todoList.getCount());
                 },
-                ()->{
-        int count = todoList.getCount();
-        todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore e");//101 characters: NO
-        assertEquals(count, todoList.getCount());
+                () -> {
+                    int count = todoList.getCount();
+                    todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore e");//101 characters: NO
+                    assertEquals(count, todoList.getCount());
                 }
         );
     }
 
     @Test
-    void validateNoDuplicates(){
+    void validateNoDuplicates() {
         assertEquals(0, todoList.getCount());
         todoList.add("buy eggs");
         assertEquals(1, todoList.getCount());
@@ -137,26 +137,26 @@ class TodoListTest {
     }
 
     @Test
-    void searchItems(){
+    void searchItems() {
         List<String> itemHeaders = Arrays.asList(
                 "buy eggs",
                 "buy milk",
                 "take a shower"
         );
-        itemHeaders.forEach(header->todoList.add(header));
+        itemHeaders.forEach(header -> todoList.add(header));
         assertEquals(3, todoList.getCount());
         String query = "buy";
 
         assertAll(
-                ()->{
+                () -> {
                     //search predicate
-                    List<Item> searchResults = todoList.searchItems(item->item.getHeader().contains(query));
+                    List<Item> searchResults = todoList.searchItems(item -> item.getHeader().contains(query));
                     assertNotNull(searchResults);
                     assertEquals(2, searchResults.size());
                     assertEquals(itemHeaders.get(0), searchResults.get(0).getHeader());
                     assertEquals(itemHeaders.get(1), searchResults.get(1).getHeader());
                 },
-                ()->{
+                () -> {
                     //search string
                     List<Item> searchResults = todoList.searchItems(query);
                     assertNotNull(searchResults);

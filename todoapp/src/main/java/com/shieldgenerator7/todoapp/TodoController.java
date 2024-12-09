@@ -3,7 +3,10 @@ package com.shieldgenerator7.todoapp;
 import com.shieldgenerator7.todoapp.data.Item;
 import com.shieldgenerator7.todoapp.data.TodoList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +27,17 @@ public class TodoController {
     @PostMapping("/todos")
     public String addTodo(@RequestBody String todo) {
         TodoList todoList = repository.findAll().get(0);
+        try {
         todoList.add(todo);
         repository.save(todoList);
         return todo;
+        }
+        catch(IllegalArgumentException iae){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, iae.getMessage());
+        }
+        catch(DuplicateKeyException dke){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, dke.getMessage());
+        }
     }
 
     @GetMapping("/todos/ids")

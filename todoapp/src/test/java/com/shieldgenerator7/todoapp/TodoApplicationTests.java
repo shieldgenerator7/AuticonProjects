@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shieldgenerator7.todoapp.data.Item;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -196,10 +197,24 @@ class TodoApplicationTests {
         //setup
         _addTestItems();
 
+        assertAll(
+                ()->{
+                    //test add blank
+                    String result = this.restTemplate.postForObject(url, "", String.class);
+                    assertNotNull(result);
+                    JSONObject json = new JSONObject(result);
+                    assertEquals(400, json.get("status"));
+                    assertEquals("Bad Request", json.get("error"));
+                },
+                ()->{
         //test add duplicate
         String result = this.restTemplate.postForObject(url, "buy groceries", String.class);
         assertNotNull(result);
-        assertTrue(result.matches(".*status.*400.*error.*Bad Request.*"));
+        JSONObject json = new JSONObject(result);
+        assertEquals(400, json.get("status"));
+        assertEquals("Bad Request", json.get("error"));
+                }
+        );
     }
 
 }

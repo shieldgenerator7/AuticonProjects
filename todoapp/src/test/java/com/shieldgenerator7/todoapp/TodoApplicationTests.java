@@ -59,6 +59,7 @@ class TodoApplicationTests {
         String urlItem = baseURL + "/item";
 
         String addedTodo = this.restTemplate.postForObject(url, "buy eggs", String.class);
+        assertEquals("buy eggs", addedTodo);
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
         assertEquals("[2]", idList);//from previous test
@@ -89,7 +90,6 @@ class TodoApplicationTests {
     void testDeletingTask() {
         String urlItem = baseURL + "/item";
         String urlIds = baseURL + "/ids";
-        String url = baseURL;
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
         assertEquals("[1]", idList);//from previous test
@@ -113,10 +113,7 @@ class TodoApplicationTests {
 
     @Test
     void testSettingPriority(){
-        String urlItem = baseURL + "/item";
         String urlIds = baseURL + "/ids";
-        String url = baseURL;
-        String urlPriority = baseURL + "/priority";
 
         //setup
         String idList = this.restTemplate.getForObject(urlIds, String.class);
@@ -143,7 +140,6 @@ class TodoApplicationTests {
 
     @Test
     void testSearch(){
-        String urlItem = baseURL + "/item";
         String urlIds = baseURL + "/ids";
         String url = baseURL;
         String urlSearch = baseURL + "/search";
@@ -156,7 +152,7 @@ class TodoApplicationTests {
         assertEquals("[2,3,4]", idList);//from previous test
 
         //search
-        String query = "buy";//+"?title="+query
+        String query = "buy";
         List result = this.restTemplate.getForObject(urlSearch+"?title="+query, List.class);
         assertNotNull(result);
         ObjectMapper mapper = new ObjectMapper();

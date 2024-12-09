@@ -1,6 +1,7 @@
 package com.shieldgenerator7.todoapp.data;
 
 import jakarta.persistence.*;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +26,17 @@ public class TodoList {
 
         //not empty
         if (itemHeader == null || itemHeader.trim().isEmpty()){
-            return;
+            throw new IllegalArgumentException("Item header must not be empty!");
         }
 
         //header length
         if (itemHeader.length() > MAX_HEADER_LENGTH){
-            return;
+            throw new IllegalArgumentException("Item header must be 100 characters or less!");
         }
 
         //no duplicates
         if (todos.stream().anyMatch(todo-> todo.getHeader().equals(itemHeader))){
-            return;
+            throw new DuplicateKeyException("There's already a task with header \""+itemHeader+"\"!");
         }
 
         //add
@@ -47,12 +48,12 @@ public class TodoList {
 
         //validate: not empty
         if (item == null){
-            return;
+            throw new IllegalArgumentException("Item must not be null!");
         }
 
         //validate: not duplicate
         if (todos.contains(item)) {
-            return;
+            throw new DuplicateKeyException("That task is already in the list!");
         }
 
             todos.add(item);

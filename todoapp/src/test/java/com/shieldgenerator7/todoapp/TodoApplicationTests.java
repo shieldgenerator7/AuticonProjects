@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -198,9 +197,9 @@ class TodoApplicationTests {
         _addTestItems();
 
         //test add duplicate
-        Object result = this.restTemplate.postForObject(url, "buy groceries", String.class);
+        String result = this.restTemplate.postForObject(url, "buy groceries", String.class);
         assertNotNull(result);
-        assertEquals(ResponseEntity.class, result.getClass());
+        assertTrue(result.matches(".*status.*400.*error.*Bad Request.*"));
     }
 
 }

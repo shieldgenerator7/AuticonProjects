@@ -55,9 +55,9 @@ class TodoApplicationTests {
         String urlIds = baseURL + "/ids";
 
         //add items
+        this.restTemplate.postForObject(url, "buy groceries", String.class);
         this.restTemplate.postForObject(url, "take a shower", String.class);
         this.restTemplate.postForObject(url, "buy eggs", String.class);
-        this.restTemplate.postForObject(url, "buy groceries", String.class);
 
         //update item id list
         try {
@@ -82,8 +82,12 @@ class TodoApplicationTests {
         String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
         assertEquals(taskHeader, addedTodo);
 
-        List<Item> itemList = this.restTemplate.getForObject(url, List.class);
-        assertEquals(1, itemList.size());
+        List result = this.restTemplate.getForObject(url, List.class);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        ObjectMapper mapper = new ObjectMapper();
+        List<Item> itemList = result.stream().map(item-> mapper.convertValue(item, Item.class)).toList();
+        assertEquals(taskHeader, itemList.get(0).getHeader());
     }
 
     @Test
@@ -92,26 +96,21 @@ class TodoApplicationTests {
         String urlIds = baseURL + "/ids";
         String urlItem = baseURL + "/item";
 
+        //setup
         _addTestItems();
 
-        String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[2]", idList);//from previous test
-        Long itemId = Long.parseLong(
-                (String) Arrays.stream(idList.split("[,\\[\\]]"))
-                        .filter(
-                                a -> !a.trim().isEmpty()
-                        ).toArray()[0]
-        );
-        assertEquals(2L, itemId);
+        //get item
+        Long itemId = idList.get(0);
         String urlItemCompletion = baseURL + "/item/" + itemId + "/completion";
-
         Item item = this.restTemplate.getForObject(urlItem + "/" + itemId, Item.class);
         assertNotNull(item);
-        assertEquals(2L, item.getId());
+        assertEquals(itemId, item.getId());
 
+        //test no completion yet
         int completion = this.restTemplate.getForObject(urlItemCompletion, int.class);
         assertEquals(0, completion);
 
+        //test completion
         completion = 100;
         completion = this.restTemplate.postForObject(urlItemCompletion, completion, int.class);
         assertEquals(100, completion);
@@ -124,21 +123,17 @@ class TodoApplicationTests {
         String urlItem = baseURL + "/item";
         String urlIds = baseURL + "/ids";
 
+        //setup
         _addTestItems();
-        String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[1]", idList);//from previous test
-        Long itemId = Long.parseLong(
-                (String) Arrays.stream(idList.split("[,\\[\\]]"))
-                        .filter(
-                                a -> !a.trim().isEmpty()
-                        ).toArray()[0]
-        );
-        assertEquals(1L, itemId);
 
+        //get item
+        Long itemId = idList.get(0);
         Item item = this.restTemplate.getForObject(urlItem + "/" + itemId, Item.class);
         assertNotNull(item);
-        assertEquals(1L, item.getId());
+        assertEquals(itemId, item.getId());
         assertEquals(taskHeader, item.getHeader());
+
+        //test delete
         this.restTemplate.delete(urlItem + "/" + itemId);
         item = this.restTemplate.getForObject(urlItem + "/" + itemId, Item.class);
         assertNull(item);
@@ -151,17 +146,9 @@ class TodoApplicationTests {
 
         //setup
         _addTestItems();
-        String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[2,3,4]", idList);//from previous test
-        Long itemId = Long.parseLong(
-                (String) Arrays.stream(idList.split("[,\\[\\]]"))
-                        .filter(
-                                a -> !a.trim().isEmpty()
-                        ).toArray()[0]
-        );
-        assertEquals(2L, itemId);
 
         //get priority
+        Long itemId = idList.get(0);
         String urlItemPriority = baseURL + "/item/" + itemId + "/priority";
         Item.Priority priority = this.restTemplate.getForObject(urlItemPriority, Item.Priority.class);
         assertEquals(Item.Priority.LOW, priority);
@@ -192,8 +179,8 @@ class TodoApplicationTests {
         assertNotNull(result);
         List<Item> searchItems = result.stream().map(item-> mapper.convertValue(item, Item.class)).toList();
         assertEquals(2, searchItems.size());
-        assertEquals("buy eggs", searchItems.get(0).getHeader());
-        assertEquals("buy groceries", searchItems.get(1).getHeader());
+        assertEquals("buy groceries", searchItems.get(0).getHeader());
+        assertEquals("buy eggs", searchItems.get(1).getHeader());
 
         //not found search
         query = "find";

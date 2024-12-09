@@ -152,14 +152,24 @@ class TodoApplicationTests {
         assertEquals("[2,3,4]", idList);//from previous test
 
         //search
-        String query = "buy";
-        List result = this.restTemplate.getForObject(urlSearch+"?title="+query, List.class);
-        assertNotNull(result);
+        String query;
         ObjectMapper mapper = new ObjectMapper();
+        List result;
+
+        //found search
+        query = "buy";
+        result = this.restTemplate.getForObject(urlSearch+"?title="+query, List.class);
+        assertNotNull(result);
         List<Item> searchItems = result.stream().map(item-> mapper.convertValue(item, Item.class)).toList();
         assertEquals(2, searchItems.size());
         assertEquals("buy eggs", searchItems.get(0).getHeader());
         assertEquals("buy groceries", searchItems.get(1).getHeader());
+
+        //not found search
+        query = "find";
+        result = this.restTemplate.getForObject(urlSearch+"?title="+query, List.class);
+        assertNotNull(result);
+        assertEquals(0, result.size());
     }
 
 }

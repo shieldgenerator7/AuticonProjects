@@ -48,6 +48,13 @@ class TodoApplicationTests {
         });
     }
 
+    void _addTestItems(){
+        String url = baseURL;
+        this.restTemplate.postForObject(url, "take a shower", String.class);
+        this.restTemplate.postForObject(url, "buy eggs", String.class);
+        this.restTemplate.postForObject(url, "buy groceries", String.class);
+    }
+
     @Test
     void testController() {
         String url = baseURL;
@@ -70,8 +77,7 @@ class TodoApplicationTests {
         String urlIds = baseURL + "/ids";
         String urlItem = baseURL + "/item";
 
-        String addedTodo = this.restTemplate.postForObject(url, "buy eggs", String.class);
-        assertEquals("buy eggs", addedTodo);
+        _addTestItems();
 
         String idList = this.restTemplate.getForObject(urlIds, String.class);
         assertEquals("[2]", idList);//from previous test
@@ -103,6 +109,7 @@ class TodoApplicationTests {
         String urlItem = baseURL + "/item";
         String urlIds = baseURL + "/ids";
 
+        _addTestItems();
         String idList = this.restTemplate.getForObject(urlIds, String.class);
         assertEquals("[1]", idList);//from previous test
         Long itemId = Long.parseLong(
@@ -128,6 +135,7 @@ class TodoApplicationTests {
         String urlIds = baseURL + "/ids";
 
         //setup
+        _addTestItems();
         String idList = this.restTemplate.getForObject(urlIds, String.class);
         assertEquals("[2,3,4]", idList);//from previous test
         Long itemId = Long.parseLong(
@@ -153,15 +161,10 @@ class TodoApplicationTests {
     @Test
     void testSearch(){
         String urlIds = baseURL + "/ids";
-        String url = baseURL;
         String urlSearch = baseURL + "/search";
 
         //setup
-        this.restTemplate.postForObject(url, "take a shower", String.class);
-        this.restTemplate.postForObject(url, "buy eggs", String.class);
-        this.restTemplate.postForObject(url, "buy groceries", String.class);
-        String idList = this.restTemplate.getForObject(urlIds, String.class);
-        assertEquals("[2,3,4]", idList);//from previous test
+        _addTestItems();
 
         //search
         String query;

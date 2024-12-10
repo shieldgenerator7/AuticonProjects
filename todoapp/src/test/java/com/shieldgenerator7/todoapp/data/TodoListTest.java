@@ -84,29 +84,29 @@ class TodoListTest {
         assertAll(
                 () -> {
                     int count = todoList.getCount();
-                    assertThrows(IllegalArgumentException.class, ()-> {
-                    todoList.add("");
+                    assertThrows(IllegalArgumentException.class, () -> {
+                        todoList.add("");
                     });
                     assertEquals(count, todoList.getCount());
                 },
                 () -> {//
                     int count = todoList.getCount();
-                    assertThrows(IllegalArgumentException.class, ()-> {
-                    todoList.add(" ");
+                    assertThrows(IllegalArgumentException.class, () -> {
+                        todoList.add(" ");
                     });
                     assertEquals(count, todoList.getCount());
                 },//
                 () -> {
                     int count = todoList.getCount();
-                    assertThrows(IllegalArgumentException.class, ()-> {
-                    todoList.add((String) null);
+                    assertThrows(IllegalArgumentException.class, () -> {
+                        todoList.add((String) null);
                     });
                     assertEquals(count, todoList.getCount());
                 },
                 () -> {
                     int count = todoList.getCount();
-                    assertThrows(IllegalArgumentException.class, ()-> {
-                    todoList.add((Item) null);
+                    assertThrows(IllegalArgumentException.class, () -> {
+                        todoList.add((Item) null);
                     });
                     assertEquals(count, todoList.getCount());
                 }
@@ -120,8 +120,8 @@ class TodoListTest {
         assertAll(
                 () -> {
                     int count = todoList.getCount();
-                    assertThrows(IllegalArgumentException.class, ()-> {
-                    todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+                    assertThrows(IllegalArgumentException.class, () -> {
+                        todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
                     });
                     assertEquals(count, todoList.getCount());
                 },
@@ -132,8 +132,8 @@ class TodoListTest {
                 },
                 () -> {
                     int count = todoList.getCount();
-                    assertThrows(IllegalArgumentException.class, ()-> {
-                    todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore e");//101 characters: NO
+                    assertThrows(IllegalArgumentException.class, () -> {
+                        todoList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore e");//101 characters: NO
                     });
                     assertEquals(count, todoList.getCount());
                 }
@@ -147,14 +147,14 @@ class TodoListTest {
         assertEquals(1, todoList.getCount());
 
         //test duplicate header
-        assertThrows(DuplicateKeyException.class, ()-> {
-        todoList.add("buy eggs");
+        assertThrows(DuplicateKeyException.class, () -> {
+            todoList.add("buy eggs");
         });
         assertEquals(1, todoList.getCount());
 
         //test duplicate item
         Item item = todoList.getItem(0);
-        assertThrows(DuplicateKeyException.class, ()-> {
+        assertThrows(DuplicateKeyException.class, () -> {
             todoList.add(item);
         });
         assertEquals(1, todoList.getCount());

@@ -21,22 +21,22 @@ public class TodoList {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Item> todos = new ArrayList<>();
 
-    public void add(String itemHeader){
+    public void add(String itemHeader) {
         //validation
 
         //not empty
-        if (itemHeader == null || itemHeader.trim().isEmpty()){
+        if (itemHeader == null || itemHeader.trim().isEmpty()) {
             throw new IllegalArgumentException("Item header must not be empty!");
         }
 
         //header length
-        if (itemHeader.length() > MAX_HEADER_LENGTH){
+        if (itemHeader.length() > MAX_HEADER_LENGTH) {
             throw new IllegalArgumentException("Item header must be 100 characters or less!");
         }
 
         //no duplicates
-        if (todos.stream().anyMatch(todo-> todo.getHeader().equals(itemHeader))){
-            throw new DuplicateKeyException("There's already a task with header \""+itemHeader+"\"!");
+        if (todos.stream().anyMatch(todo -> todo.getHeader().equals(itemHeader))) {
+            throw new DuplicateKeyException("There's already a task with header \"" + itemHeader + "\"!");
         }
 
         //add
@@ -47,7 +47,7 @@ public class TodoList {
     public void add(Item item) {
 
         //validate: not empty
-        if (item == null){
+        if (item == null) {
             throw new IllegalArgumentException("Item must not be null!");
         }
 
@@ -56,7 +56,7 @@ public class TodoList {
             throw new DuplicateKeyException("That task is already in the list!");
         }
 
-            todos.add(item);
+        todos.add(item);
     }
 
     public List<Item> getTodos() {
@@ -89,10 +89,11 @@ public class TodoList {
         }
     }
 
-    public List<Item> searchItems(String query){
-        return searchItems(item->item.getHeader().contains(query));
+    public List<Item> searchItems(String query) {
+        return searchItems(item -> item.getHeader().contains(query));
     }
-    public List<Item> searchItems(Predicate<Item> searchFunc){
+
+    public List<Item> searchItems(Predicate<Item> searchFunc) {
         return todos.stream().filter(searchFunc).toList();
     }
 }

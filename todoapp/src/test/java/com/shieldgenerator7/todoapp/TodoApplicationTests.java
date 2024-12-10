@@ -35,7 +35,7 @@ class TodoApplicationTests {
     List<Long> idList;
 
     @BeforeEach
-    void initTests(){
+    void initTests() {
         baseURL = "http://localhost:" + port + "/todos";
     }
 
@@ -45,13 +45,14 @@ class TodoApplicationTests {
         String urlIds = baseURL + "/ids";
         String idListString = this.restTemplate.getForObject(urlIds, String.class);
         ObjectMapper mapper = new ObjectMapper();
-        List<Long> idList = mapper.readValue(idListString, new TypeReference<List<Long>>() {});
-        idList.forEach(id->{
+        List<Long> idList = mapper.readValue(idListString, new TypeReference<List<Long>>() {
+        });
+        idList.forEach(id -> {
             this.restTemplate.delete(urlItem + "/" + id);
         });
     }
 
-    void _addTestItems(){
+    void _addTestItems() {
         String url = baseURL;
         String urlIds = baseURL + "/ids";
 
@@ -65,7 +66,8 @@ class TodoApplicationTests {
             idList = null;
             String idListString = this.restTemplate.getForObject(urlIds, String.class);
             ObjectMapper mapper = new ObjectMapper();
-            idList = mapper.readValue(idListString, new TypeReference<List<Long>>() {});
+            idList = mapper.readValue(idListString, new TypeReference<List<Long>>() {
+            });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -87,7 +89,7 @@ class TodoApplicationTests {
         assertNotNull(result);
         assertEquals(1, result.size());
         ObjectMapper mapper = new ObjectMapper();
-        List<Item> itemList = result.stream().map(item-> mapper.convertValue(item, Item.class)).toList();
+        List<Item> itemList = result.stream().map(item -> mapper.convertValue(item, Item.class)).toList();
         assertEquals(taskHeader, itemList.get(0).getHeader());
     }
 
@@ -142,7 +144,7 @@ class TodoApplicationTests {
     }
 
     @Test
-    void testSettingPriority(){
+    void testSettingPriority() {
         String urlIds = baseURL + "/ids";
 
         //setup
@@ -162,7 +164,7 @@ class TodoApplicationTests {
     }
 
     @Test
-    void testSearch(){
+    void testSearch() {
         String urlIds = baseURL + "/ids";
         String urlSearch = baseURL + "/search";
 
@@ -176,29 +178,29 @@ class TodoApplicationTests {
 
         //found search
         query = "buy";
-        result = this.restTemplate.getForObject(urlSearch+"?title="+query, List.class);
+        result = this.restTemplate.getForObject(urlSearch + "?title=" + query, List.class);
         assertNotNull(result);
-        List<Item> searchItems = result.stream().map(item-> mapper.convertValue(item, Item.class)).toList();
+        List<Item> searchItems = result.stream().map(item -> mapper.convertValue(item, Item.class)).toList();
         assertEquals(2, searchItems.size());
         assertEquals("buy groceries", searchItems.get(0).getHeader());
         assertEquals("buy eggs", searchItems.get(1).getHeader());
 
         //not found search
         query = "find";
-        result = this.restTemplate.getForObject(urlSearch+"?title="+query, List.class);
+        result = this.restTemplate.getForObject(urlSearch + "?title=" + query, List.class);
         assertNotNull(result);
         assertEquals(0, result.size());
     }
 
     @Test
-    void testErrorOnAdd(){
+    void testErrorOnAdd() {
         String url = baseURL;
 
         //setup
         _addTestItems();
 
         assertAll(
-                ()->{
+                () -> {
                     //test add blank
                     String result = this.restTemplate.postForObject(url, "", String.class);
                     assertNotNull(result);
@@ -206,13 +208,13 @@ class TodoApplicationTests {
                     assertEquals(400, json.get("status"));
                     assertEquals("Bad Request", json.get("error"));
                 },
-                ()->{
-        //test add duplicate
-        String result = this.restTemplate.postForObject(url, "buy groceries", String.class);
-        assertNotNull(result);
-        JSONObject json = new JSONObject(result);
-        assertEquals(400, json.get("status"));
-        assertEquals("Bad Request", json.get("error"));
+                () -> {
+                    //test add duplicate
+                    String result = this.restTemplate.postForObject(url, "buy groceries", String.class);
+                    assertNotNull(result);
+                    JSONObject json = new JSONObject(result);
+                    assertEquals(400, json.get("status"));
+                    assertEquals("Bad Request", json.get("error"));
                 }
         );
     }

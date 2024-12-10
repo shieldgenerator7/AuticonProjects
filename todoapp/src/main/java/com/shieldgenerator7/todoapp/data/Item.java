@@ -19,16 +19,17 @@ public class Item {
     @Getter
     private int completionStatus = 0;
 
-    public enum Priority{
+    public enum Priority {
         LOW,
         MEDIUM,
         HIGH,
     }
+
     @Getter
     @Setter
     private Priority priority;
 
-    public Item (){
+    public Item() {
         header = "";
         priority = Priority.LOW;
     }
@@ -38,11 +39,11 @@ public class Item {
         priority = Priority.LOW;
     }
 
-    public Long getId(){
+    public Long getId() {
         return id;
     }
 
-    public int setCompletionStatus(int value){
+    public int setCompletionStatus(int value) {
         completionStatus = Math.min(Math.max(value, 0), 100);
         return completionStatus;
     }

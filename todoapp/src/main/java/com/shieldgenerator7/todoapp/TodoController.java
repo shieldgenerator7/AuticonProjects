@@ -28,14 +28,12 @@ public class TodoController {
     public String addTodo(@RequestBody String todo) {
         TodoList todoList = repository.findAll().get(0);
         try {
-        todoList.add(todo);
-        repository.save(todoList);
-        return todo;
-        }
-        catch(IllegalArgumentException iae){
+            todoList.add(todo);
+            repository.save(todoList);
+            return todo;
+        } catch (IllegalArgumentException iae) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, iae.getMessage());
-        }
-        catch(DuplicateKeyException dke){
+        } catch (DuplicateKeyException dke) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, dke.getMessage());
         }
     }
@@ -48,8 +46,8 @@ public class TodoController {
     }
 
     @GetMapping("/todos/search")
-    public List<Item> searchTodoIds(@RequestParam(value="title") String query) {
-        System.out.println("======== "+query+" ===============");
+    public List<Item> searchTodoIds(@RequestParam(value = "title") String query) {
+        System.out.println("======== " + query + " ===============");
         TodoList todoList = repository.findAll().get(0);
         return todoList.searchItems(query);
     }

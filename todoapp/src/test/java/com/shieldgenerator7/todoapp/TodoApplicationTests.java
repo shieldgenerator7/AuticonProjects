@@ -30,7 +30,6 @@ class TodoApplicationTests {
 
     @Autowired
     private TestRestTemplate restTemplate;
-    private Item item;
 
     List<Long> idList;
 
@@ -95,8 +94,6 @@ class TodoApplicationTests {
 
     @Test
     void testCompletionStatus() {
-        String url = baseURL;
-        String urlIds = baseURL + "/ids";
         String urlItem = baseURL + "/item";
 
         //setup
@@ -124,8 +121,6 @@ class TodoApplicationTests {
     @Test
     void testDeletingTask() {
         String urlItem = baseURL + "/item";
-        String urlIds = baseURL + "/ids";
-
         //setup
         _addTestItems();
 
@@ -145,7 +140,6 @@ class TodoApplicationTests {
 
     @Test
     void testSettingPriority() {
-        String urlIds = baseURL + "/ids";
 
         //setup
         _addTestItems();
@@ -165,7 +159,6 @@ class TodoApplicationTests {
 
     @Test
     void testSearch() {
-        String urlIds = baseURL + "/ids";
         String urlSearch = baseURL + "/search";
 
         //setup

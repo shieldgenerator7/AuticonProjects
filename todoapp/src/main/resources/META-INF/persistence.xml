@@ -12,10 +12,10 @@
 <!--        <class>org.acme.Person</class>-->
 <!--        <class>org.acme.Address</class>-->
         <properties>
-            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="jakarta.persistence.jdbc.password" value=""/>
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.username" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="todoappdb"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/todoappdb"/>
-<!--            <property name="jakarta.persistence.jdbc.username" value=""/>-->
 
 <!--            <property name="hibernate.default_schema" value=""/>-->
             <property name="hibernate.dialect"  value="org.hibernate.dialect.MySQLDialect"/>

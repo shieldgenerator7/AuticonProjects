@@ -10,32 +10,33 @@ import java.util.List;
 
 public class TodoListRepositoryManager {
 
-    EntityManagerFactory emf;
+    private EntityManagerFactory emf;
 
     public TodoListRepositoryManager() {
         emf = Persistence.createEntityManagerFactory("com.shieldgenerator7.todoapp");
     }
 
     public TodoList getTodoList() {
+        //set up
         EntityManager em = emf.createEntityManager();
+        //get id
         Query queryFirstTodoList = em.createNativeQuery("SELECT id FROM todoList ORDER BY id ASC LIMIT 1;");
-        System.out.println("query length: " + queryFirstTodoList.getResultList().size());
         List idList = queryFirstTodoList.getResultList();
+        //if no id found,
         if (idList == null || idList.isEmpty()) {
+            //insert new todo list
             em.getTransaction().begin();
             TodoList todoList = new TodoList();
             em.persist(todoList);
             em.getTransaction().commit();
             idList = queryFirstTodoList.getResultList();
         }
-        Long key = (Long) queryFirstTodoList.getResultList().get(0);
-        System.out.println("key: " + key);
+        //get todo list
+        Long key = (Long) idList.get(0);
         TodoList todoList = (TodoList) em.getReference(TodoList.class, key);
-        if (todoList != null) {
-            System.out.println("todolist " + todoList.getId() + ": ");
-
-        }
+        //clean up
         em.close();
-        return null;
+        //return todo list
+        return todoList;
     }
 }

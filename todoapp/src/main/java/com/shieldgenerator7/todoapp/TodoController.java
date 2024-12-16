@@ -17,6 +17,11 @@ public class TodoController {
     @Autowired
     TodoListRepository repository;
 
+    public TodoController(){
+        TodoListRepositoryManager tlrm = new TodoListRepositoryManager();
+        tlrm.getTodoList();
+    }
+
     @GetMapping("/todos")
     public List<String> getTodos() {
         TodoList todoList = repository.findAll().get(0);

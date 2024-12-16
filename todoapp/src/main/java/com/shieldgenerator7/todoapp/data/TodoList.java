@@ -1,6 +1,7 @@
 package com.shieldgenerator7.todoapp.data;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class TodoList {
 
     @Id
     @GeneratedValue
+    @Getter
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL)

@@ -17,6 +17,16 @@ public class TodoListRepositoryManager {
         emf = Persistence.createEntityManagerFactory("com.shieldgenerator7.todoapp");
     }
 
+    public void persist(Object entity){
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+
+        em.persist(entity);
+
+        em.getTransaction().commit();
+        em.close();
+    }
+
     public TodoList getTodoList() {
         if (todoList == null) {
         //set up

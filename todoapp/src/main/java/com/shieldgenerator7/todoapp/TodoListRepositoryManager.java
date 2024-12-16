@@ -11,12 +11,14 @@ import java.util.List;
 public class TodoListRepositoryManager {
 
     private EntityManagerFactory emf;
+    private TodoList todoList;
 
     public TodoListRepositoryManager() {
         emf = Persistence.createEntityManagerFactory("com.shieldgenerator7.todoapp");
     }
 
     public TodoList getTodoList() {
+        if (todoList == null) {
         //set up
         EntityManager em = emf.createEntityManager();
         //get id
@@ -33,9 +35,10 @@ public class TodoListRepositoryManager {
         }
         //get todo list
         Long key = (Long) idList.get(0);
-        TodoList todoList = (TodoList) em.getReference(TodoList.class, key);
+        todoList = (TodoList) em.getReference(TodoList.class, key);
         //clean up
         em.close();
+        }
         //return todo list
         return todoList;
     }

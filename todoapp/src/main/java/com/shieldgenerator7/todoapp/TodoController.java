@@ -17,15 +17,18 @@ public class TodoController {
     @Autowired
     TodoListRepository repository;
 
-    private final TodoListRepositoryManager tlrm;
+    private TodoListRepositoryManager _tlrm;
 
-    public TodoController(){
-        tlrm = new TodoListRepositoryManager();
+    public TodoListRepositoryManager tlrm(){
+        if (_tlrm == null){
+            _tlrm = new TodoListRepositoryManager();
+        }
+        return _tlrm;
     }
 
     @GetMapping("/todos")
     public List<String> getTodos() {
-        TodoList todoList = tlrm.getTodoList();
+        TodoList todoList = tlrm().getTodoList();
 //        TodoList todoList = repository.findAll().get(0);
         return todoList.getTodos().stream()
                 .map(Item::getHeader).toList();
@@ -33,12 +36,12 @@ public class TodoController {
 
     @PostMapping("/todos")
     public String addTodo(@RequestBody String todo) {
-        TodoList todoList = tlrm.getTodoList();
+        TodoList todoList = tlrm().getTodoList();
 //        TodoList todoList = repository.findAll().get(0);
         try {
             todoList.add(todo);
 //            repository.save(todoList);
-            tlrm.persist(todoList);
+            tlrm().persist(todoList);
             return todo;
         } catch (IllegalArgumentException iae) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, iae.getMessage());

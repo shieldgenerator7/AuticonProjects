@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.SpringVersion;
 
 import java.util.Arrays;
 import java.util.List;
@@ -70,6 +71,12 @@ class TodoApplicationTests {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    void springVersion(){
+        //2024-12-16: copied from https://www.baeldung.com/spring-find-version
+        assertEquals("6.2.0", SpringVersion.getVersion());
     }
 
     @Test

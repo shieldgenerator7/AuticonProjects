@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="container mx-auto max-w-2xl px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <!-- Header section with title and counter -->
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Todo List</h1>
+                <span id="todoCount" class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                    0 tasks
+                </span>
+            </div>
+
+            <!-- Error message container -->
+            <div id="error" class="hidden bg-red-100 text-red-700 p-3 rounded-md mb-4"></div>
+
+            <!-- Search Bar -->
+            <div class="mb-6">
+                <input type="text" id="searchInput" 
+                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Search todos...">
+            </div>
+
+            <!-- Todo input form -->
+            <div class="space-y-4 mb-6">
+                <input type="text" id="todoInput" 
+                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter todo title">
+
+                <div class="flex gap-2">
+                    <select id="prioritySelect" 
+                        class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="HIGH">High</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="LOW">Low</option>
+                    </select>
+
+                    <button id="addButton" 
+                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Add
+                    </button>
+                </div>
+            </div>
+
+            <!-- Todo list container -->
+            <div id="todoList" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <script>
+        // API configuration
+        const API_BASE_URL = 'http://localhost:8080/api/todos';
+        const API_ENDPOINTS = {
+            GET_ALL: '',                     // Empty means use base URL
+            SEARCH: '/search',               // /search endpoint
+            CREATE: '',                      // POST to base URL
+            COMPLETE: '/complete',           // /{id}/complete
+            DELETE: ''                       // /{id}
+        };
+
+        const API_PARAMS = {
+            SEARCH_TITLE: 'title',           // search?title=
+            ID: 'id'                         // /{id}
+        };
+
+        const REQUEST_BODY_FIELDS = {
+            TITLE: 'title',
+            PRIORITY: 'priority',
+            COMPLETED: 'completed'
+        };
+
+        // DOM element references
+        const todoInput = document.getElementById('todoInput');
+        const searchInput = document.getElementById('searchInput');
+        const prioritySelect = document.getElementById('prioritySelect');
+        const addButton = document.getElementById('addButton');
+        const todoList = document.getElementById('todoList');
+        const todoCount = document.getElementById('todoCount');
+        const errorDiv = document.getElementById('error');
+
+        /**
+         * Displays an error message for 3 seconds
+         * @param {string} message - The error message to display
+         */
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        /**
+         * Updates the todo count badge
+         * @param {number} count - Number of todos
+         */
+        function updateTodoCount(count) {
+            todoCount.textContent = `${count} task${count !== 1 ? 's' : ''}`;
+        }
+
+        /**
+         * Returns Tailwind classes for priority badge colors
+         * @param {string} priority - Priority level (HIGH/MEDIUM/LOW)
+         * @returns {string} Tailwind CSS classes
+         */
+        function getPriorityColor(priority) {
+            switch(priority) {
+                case 'HIGH': return 'bg-red-100 text-red-800';
+                case 'MEDIUM': return 'bg-yellow-100 text-yellow-800';
+                case 'LOW': return 'bg-green-100 text-green-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        /**
+         * Creates a secure todo element with XSS protection
+         * @param {Object} todo - Todo item object
+         * @returns {HTMLElement} The created todo element
+         */
+        function createTodoElement(todo) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-md';
+
+            // Create left section with checkbox, title, and priority
+            const leftDiv = document.createElement('div');
+            leftDiv.className = 'flex items-center gap-2';
+
+            // Create checkbox
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = todo.completed;
+            checkbox.className = 'h-4 w-4 text-blue-600 focus:ring-blue-500 rounded';
+            checkbox.addEventListener('change', () => completeTodo(todo.id, checkbox));
+
+            // Create title span
+            const titleSpan = document.createElement('span');
+            titleSpan.textContent = todo.title;
+            if (todo.completed) {
+                titleSpan.className = 'line-through text-gray-500';
+            }
+
+            // Create priority badge
+            const prioritySpan = document.createElement('span');
+            prioritySpan.className = `${getPriorityColor(todo.priority)} text-xs font-medium px-2.5 py-0.5 rounded-full`;
+            prioritySpan.textContent = todo.priority;
+
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'text-red-600 hover:text-red-800';
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => deleteTodo(todo.id));
+
+            // Assemble the elements
+            leftDiv.appendChild(checkbox);
+            leftDiv.appendChild(titleSpan);
+            leftDiv.appendChild(prioritySpan);
+            div.appendChild(leftDiv);
+            div.appendChild(deleteButton);
+
+            return div;
+        }
+
+        /**
+         * Loads todos from the API, optionally filtered by search term
+         * @param {string} searchTerm - Optional search term
+         */
+        async function loadTodos(searchTerm = '') {
+            try {
+                const url = searchTerm 
+                    ? `${API_BASE_URL}${API_ENDPOINTS.SEARCH}?${API_PARAMS.SEARCH_TITLE}=${encodeURIComponent(searchTerm)}`
+                    : `${API_BASE_URL}${API_ENDPOINTS.GET_ALL}`;
+                
+                const response = await fetch(url);
+                const todos = await response.json();
+                todoList.innerHTML = ''; // Safe to use here as we're not inserting user content
+                todos.forEach(todo => {
+                    todoList.appendChild(createTodoElement(todo));
+                });
+                updateTodoCount(todos.length);
+            } catch (error) {
+                showError('Failed to load todos');
+            }
+        }
+
+        /**
+         * Adds a new todo item
+         */
+        async function addTodo() {
+            const title = todoInput.value.trim();
+            if (!title) {
+                showError('Todo title cannot be empty');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.CREATE}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        [REQUEST_BODY_FIELDS.TITLE]: title,
+                        [REQUEST_BODY_FIELDS.PRIORITY]: prioritySelect.value,
+                        [REQUEST_BODY_FIELDS.COMPLETED]: false
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(error);
+                }
+
+                todoInput.value = '';
+                await loadTodos();
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        /**
+         * Marks a todo as complete
+         * @param {number} id - Todo ID
+         * @param {HTMLElement} checkbox - Checkbox element
+         */
+        async function completeTodo(id, checkbox) {
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/${id}${API_ENDPOINTS.COMPLETE}`, 
+                    { method: 'PUT' }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to update todo');
+                }
+
+                await loadTodos(searchInput.value.trim());
+            } catch (error) {
+                showError(error.message);
+                checkbox.checked = !checkbox.checked;
+            }
+        }
+
+        /**
+         * Deletes a todo item
+         * @param {number} id - Todo ID
+         */
+        async function deleteTodo(id) {
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/${id}${API_ENDPOINTS.DELETE}`, 
+                    { method: 'DELETE' }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete todo');
+                }
+
+                await loadTodos(searchInput.value.trim());
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        // Add search functionality with debounce
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                loadTodos(e.target.value.trim());
+            }, 300);
+        });
+
+        // Event listeners
+        addButton.addEventListener('click', addTodo);
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        // Initial load
+        loadTodos();
+    </script>
+</body>
+</html>

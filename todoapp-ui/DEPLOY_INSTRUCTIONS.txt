@@ -1,0 +1,9 @@
+go to console:
+npm run deployfull
+
+
+you should be good to go!
+
+
+=======
+p.s. package.json has the version number that you should update if you want to update it

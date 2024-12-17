@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:8000")
 @RestController
 public class TodoController {

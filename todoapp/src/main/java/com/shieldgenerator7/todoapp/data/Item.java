@@ -1,22 +1,22 @@
 package com.shieldgenerator7.todoapp.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 public class Item {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Getter
     private String header;
 
     @Getter
+    @ColumnDefault("0")
     private int completionStatus = 0;
 
     public enum Priority {
@@ -27,6 +27,7 @@ public class Item {
 
     @Getter
     @Setter
+    @ColumnDefault("0")
     private Priority priority;
 
     public Item() {

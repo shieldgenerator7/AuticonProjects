@@ -16,7 +16,7 @@ public class TodoList {
     private static int MAX_HEADER_LENGTH = 100;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     private Long id;
 

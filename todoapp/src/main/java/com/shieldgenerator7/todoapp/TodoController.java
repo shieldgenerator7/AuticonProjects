@@ -30,7 +30,6 @@ public class TodoController {
         try {
             todoList.add(todo);
             repository.save(todoList);
-            repository.persist();
             return todo;
         } catch (IllegalArgumentException iae) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, iae.getMessage());
@@ -64,7 +63,6 @@ public class TodoController {
         TodoList todoList = repository.findAll().get(0);
         todoList.removeById(itemId);
         repository.save(todoList);
-        repository.persist();
     }
 
 
@@ -81,7 +79,6 @@ public class TodoController {
         Item item = todoList.getItemById(itemId);
         int completed = item.setCompletionStatus(completionStatus);
         repository.save(todoList);
-        repository.persist();
         return completed;
     }
 
@@ -98,7 +95,6 @@ public class TodoController {
         Item item = todoList.getItemById(itemId);
         item.setPriority(priority);
         repository.save(todoList);
-        repository.persist();
     }
 
     @GetMapping("/")

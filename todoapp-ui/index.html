@@ -61,8 +61,9 @@
             GET_ALL: '',                     // Empty means use base URL
             SEARCH: '/search',               // /search endpoint
             CREATE: '',                      // POST to base URL
-            COMPLETE: '/complete',           // /{id}/complete
-            DELETE: ''                       // /{id}
+            ITEM: '/item',                   // for endpoints editing item by id
+            COMPLETE: '/completion',           // /{id}/complete
+            DELETE: '/'                       // /{id}
         };
 
         const API_PARAMS = {
@@ -232,7 +233,7 @@
         async function completeTodo(id, checkbox) {
             try {
                 const response = await fetch(
-                    `${API_BASE_URL}/${id}${API_ENDPOINTS.COMPLETE}`, 
+                    `${API_BASE_URL}${API_ENDPOINTS.ITEM}/${id}${API_ENDPOINTS.COMPLETE}`, 
                     { 
                         method: 'PUT',
                         headers: {
@@ -260,8 +261,8 @@
         async function deleteTodo(id) {
             try {
                 const response = await fetch(
-                    `${API_BASE_URL}/${id}${API_ENDPOINTS.DELETE}`, 
                     { method: 'DELETE' }
+                    `${API_BASE_URL}${API_ENDPOINTS.ITEM}/${id}${API_ENDPOINTS.DELETE}`, 
                 );
 
                 if (!response.ok) {

@@ -135,14 +135,14 @@
             // Create checkbox
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.checked = todo.completed;
+            checkbox.checked = todo.completionStatus == 100;
             checkbox.className = 'h-4 w-4 text-blue-600 focus:ring-blue-500 rounded';
             checkbox.addEventListener('change', () => completeTodo(todo.id, checkbox));
 
             // Create title span
             const titleSpan = document.createElement('span');
-            if (todo.completed) {
             titleSpan.textContent = todo.header;
+            if (todo.completionStatus == 100) {
                 titleSpan.className = 'line-through text-gray-500';
             }
 
@@ -208,7 +208,7 @@
                     body: JSON.stringify({
                         [REQUEST_BODY_FIELDS.TITLE]: title,
                         [REQUEST_BODY_FIELDS.PRIORITY]: prioritySelect.value,
-                        [REQUEST_BODY_FIELDS.COMPLETED]: false
+                        [REQUEST_BODY_FIELDS.COMPLETED]: 0,
                     })
                 });
 
@@ -233,7 +233,13 @@
             try {
                 const response = await fetch(
                     `${API_BASE_URL}/${id}${API_ENDPOINTS.COMPLETE}`, 
-                    { method: 'PUT' }
+                    { 
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'text/plain',
+                        },
+                        body: 100,
+                     }
                 );
 
                 if (!response.ok) {

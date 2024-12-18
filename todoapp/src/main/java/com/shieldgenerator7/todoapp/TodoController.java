@@ -26,12 +26,12 @@ public class TodoController {
     }
 
     @PostMapping("/todos")
-    public String addTodo(@RequestBody String todo) {
+    public String addTodo(@RequestBody Item todo) {
         TodoList todoList = repository.findAll().get(0);
         try {
-            todoList.add(todo);
+            todoList.add(todo.getHeader());
             repository.save(todoList);
-            return todo;
+            return todo.getHeader();
         } catch (IllegalArgumentException iae) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, iae.getMessage());
         } catch (DuplicateKeyException dke) {

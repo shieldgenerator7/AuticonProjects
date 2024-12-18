@@ -25,7 +25,28 @@ public class TodoList {
 
     public void add(String itemHeader) {
         //validation
+        validateHeader(itemHeader);
 
+        //add
+        Item item = new Item(itemHeader);
+        todos.add(item);
+    }
+
+    public void add(Item item) {
+
+        //validate: not empty
+        if (item == null) {
+            throw new IllegalArgumentException("Item must not be null!");
+        }
+
+        //validate: not duplicate
+        validateHeader(item.getHeader());
+
+        //add item to list
+        todos.add(item);
+    }
+
+    private void validateHeader(String itemHeader) {
         //not empty
         if (itemHeader == null || itemHeader.trim().isEmpty()) {
             throw new IllegalArgumentException("Item header must not be empty!");
@@ -41,24 +62,7 @@ public class TodoList {
             throw new DuplicateKeyException("There's already a task with header \"" + itemHeader + "\"!");
         }
 
-        //add
-        Item item = new Item(itemHeader);
-        todos.add(item);
-    }
-
-    public void add(Item item) {
-
-        //validate: not empty
-        if (item == null) {
-            throw new IllegalArgumentException("Item must not be null!");
-        }
-
-        //validate: not duplicate
-        if (todos.contains(item)) {
-            throw new DuplicateKeyException("That task is already in the list!");
-        }
-
-        todos.add(item);
+        //no errors, return
     }
 
     public List<Item> getTodos() {

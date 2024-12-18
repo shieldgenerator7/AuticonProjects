@@ -141,8 +141,8 @@
 
             // Create title span
             const titleSpan = document.createElement('span');
-            titleSpan.textContent = todo.title;
             if (todo.completed) {
+            titleSpan.textContent = todo.header;
                 titleSpan.className = 'line-through text-gray-500';
             }
 

@@ -20,10 +20,9 @@ public class TodoController {
     TodoListRepository repository;
 
     @GetMapping("/todos")
-    public List<String> getTodos() {
+    public List<Item> getTodos() {
         TodoList todoList = repository.findAll().get(0);
-        return todoList.getTodos().stream()
-                .map(Item::getHeader).toList();
+        return todoList.getTodos();
     }
 
     @PostMapping("/todos")

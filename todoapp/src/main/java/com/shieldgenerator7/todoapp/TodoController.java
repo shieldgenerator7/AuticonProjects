@@ -1,6 +1,7 @@
 package com.shieldgenerator7.todoapp;
 
 import com.shieldgenerator7.todoapp.data.Item;
+import com.shieldgenerator7.todoapp.data.Priority;
 import com.shieldgenerator7.todoapp.data.TodoList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -84,14 +85,14 @@ public class TodoController {
     }
 
     @GetMapping("/todos/item/{itemId}/priority")
-    public Item.Priority getItemPriority(@PathVariable Long itemId) {
+    public Priority getItemPriority(@PathVariable Long itemId) {
         TodoList todoList = repository.findAll().get(0);
         Item item = todoList.getItemById(itemId);
         return item.getPriority();
     }
 
-    @PostMapping("/todos/item/{itemId}/priority")
-    public void updateItemPriority(@PathVariable Long itemId, @RequestBody Item.Priority priority) {
+    @PutMapping("/todos/item/{itemId}/priority")
+    public void updateItemPriority(@PathVariable Long itemId, @RequestBody Priority priority) {
         TodoList todoList = repository.findAll().get(0);
         Item item = todoList.getItemById(itemId);
         item.setPriority(priority);

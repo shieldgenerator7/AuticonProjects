@@ -19,15 +19,11 @@ public class Item {
     @ColumnDefault("0")
     private int completionStatus = 0;
 
-    public enum Priority {
-        LOW,
-        MEDIUM,
-        HIGH,
-    }
+
 
     @Getter
     @Setter
-    @ColumnDefault("0")
+    @Enumerated(EnumType.STRING)
     private Priority priority;
 
     public Item() {

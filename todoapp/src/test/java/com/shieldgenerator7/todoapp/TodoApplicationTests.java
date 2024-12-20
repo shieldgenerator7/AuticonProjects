@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shieldgenerator7.todoapp.data.Item;
+import com.shieldgenerator7.todoapp.data.Priority;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -154,13 +155,13 @@ class TodoApplicationTests {
         //get priority
         Long itemId = idList.get(0);
         String urlItemPriority = baseURL + "/item/" + itemId + "/priority";
-        Item.Priority priority = this.restTemplate.getForObject(urlItemPriority, Item.Priority.class);
-        assertEquals(Item.Priority.LOW, priority);
+        Priority priority = this.restTemplate.getForObject(urlItemPriority, Priority.class);
+        assertEquals(Priority.LOW, priority);
 
         //set priority
-        this.restTemplate.postForObject(urlItemPriority, Item.Priority.HIGH, Item.Priority.class);
-        priority = this.restTemplate.getForObject(urlItemPriority, Item.Priority.class);
-        assertEquals(Item.Priority.HIGH, priority);
+        this.restTemplate.postForObject(urlItemPriority, Priority.HIGH, Priority.class);
+        priority = this.restTemplate.getForObject(urlItemPriority, Priority.class);
+        assertEquals(Priority.HIGH, priority);
 
     }
 

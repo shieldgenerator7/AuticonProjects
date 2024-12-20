@@ -168,6 +168,11 @@
             return div;
         }
 
+        async function fetchLog(input, init){
+            console.log("fetching",input,init);
+            return fetch(input, init);
+        }
+
         /**
          * Loads todos from the API, optionally filtered by search term
          * @param {string} searchTerm - Optional search term
@@ -178,7 +183,7 @@
                     ? `${API_BASE_URL}${API_ENDPOINTS.SEARCH}?${API_PARAMS.SEARCH_TITLE}=${encodeURIComponent(searchTerm)}`
                     : `${API_BASE_URL}${API_ENDPOINTS.GET_ALL}`;
                 
-                const response = await fetch(url);
+                const response = await fetchLog(url);
                 const todos = await response.json();
                 todoList.innerHTML = ''; // Safe to use here as we're not inserting user content
                 todos.forEach(todo => {
@@ -201,7 +206,7 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.CREATE}`, {
+                const response = await fetchLog(`${API_BASE_URL}${API_ENDPOINTS.CREATE}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -232,8 +237,8 @@
          */
         async function completeTodo(id, checkbox) {
             try {
-                const response = await fetch(
                     `${API_BASE_URL}${API_ENDPOINTS.ITEM}/${id}${API_ENDPOINTS.COMPLETE}`, 
+                const response = await fetchLog(
                     { 
                         method: 'PUT',
                         headers: {
@@ -260,8 +265,8 @@
          */
         async function deleteTodo(id) {
             try {
-                const response = await fetch(
                     { method: 'DELETE' }
+                const response = await fetchLog(
                     `${API_BASE_URL}${API_ENDPOINTS.ITEM}/${id}${API_ENDPOINTS.DELETE}`, 
                 );
 

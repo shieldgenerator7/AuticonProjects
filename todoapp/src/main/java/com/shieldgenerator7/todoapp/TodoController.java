@@ -11,27 +11,29 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:8000")
 @RestController
 public class TodoController {
 
+    private static int MAX_HEADER_LENGTH = 100;
+
     @Autowired
-    TodoListRepository repository;
+    ItemRepository repository;
 
     @GetMapping("/todos")
     public List<Item> getTodos() {
-        TodoList todoList = repository.findAll().get(0);
-        return todoList.getTodos();
+        return repository.findAll();
     }
 
     @PostMapping("/todos")
     public String addTodo(@RequestBody Item todo) {
-        TodoList todoList = repository.findAll().get(0);
         try {
-            todoList.add(todo.getHeader());
-            repository.save(todoList);
+            validateHeader(todo);
+            repository.save(todo);
             return todo.getHeader();
         } catch (IllegalArgumentException iae) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, iae.getMessage());
@@ -42,66 +44,109 @@ public class TodoController {
 
     @GetMapping("/todos/ids")
     public List<Long> getTodoIds() {
-        TodoList todoList = repository.findAll().get(0);
-        return todoList.getTodos().stream()
+        return repository.findAll().stream()
                 .map(Item::getId).toList();
     }
 
     @GetMapping("/todos/search")
     public List<Item> searchTodoIds(@RequestParam(value = "title") String query) {
         System.out.println("======== " + query + " ===============");
-        TodoList todoList = repository.findAll().get(0);
-        return todoList.searchItems(query);
+        return searchItems(query, repository.findAll());
     }
 
     @GetMapping("/todos/item/{itemId}")
     public Item getItem(@PathVariable Long itemId) {
-        TodoList todoList = repository.findAll().get(0);
-        return todoList.getItemById(itemId);
+        Item item = getItemById(itemId, repository.findAll());
+        return item;
     }
 
     @DeleteMapping("/todos/item/{itemId}")
     public void deleteItem(@PathVariable Long itemId) {
-        TodoList todoList = repository.findAll().get(0);
-        todoList.removeById(itemId);
-        repository.save(todoList);
+        removeById(itemId, repository.findAll());
     }
 
 
     @GetMapping("/todos/item/{itemId}/completion")
     public int getItemCompletion(@PathVariable int itemId) {
-        TodoList todoList = repository.findAll().get(0);
-        Item item = todoList.getItemById((long)itemId);
+        Item item = getItemById((long)itemId, repository.findAll());
         return item.getCompletionStatus();
     }
 
     @PutMapping("/todos/item/{itemId}/completion")
     public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) {
-        TodoList todoList = repository.findAll().get(0);
-        Item item = todoList.getItemById(itemId);
+        Item item = getItemById(itemId, repository.findAll());
         int completed = item.setCompletionStatus(completionStatus);
-        repository.save(todoList);
+        repository.save(item);
         return completed;
     }
 
     @GetMapping("/todos/item/{itemId}/priority")
     public Priority getItemPriority(@PathVariable Long itemId) {
-        TodoList todoList = repository.findAll().get(0);
-        Item item = todoList.getItemById(itemId);
+        Item item = getItemById(itemId, repository.findAll());
         return item.getPriority();
     }
 
     @PutMapping("/todos/item/{itemId}/priority")
     public void updateItemPriority(@PathVariable Long itemId, @RequestBody Priority priority) {
-        TodoList todoList = repository.findAll().get(0);
-        Item item = todoList.getItemById(itemId);
+        Item item = getItemById(itemId, repository.findAll());
         item.setPriority(priority);
-        repository.save(todoList);
+        repository.save(item);
     }
 
     @GetMapping("/")
     public String root() {
         return "<h1>test list</h1>";
+    }
+
+    private void validateHeader(Item item){
+        if (item == null){
+            throw new IllegalArgumentException("Item must not be null!");
+        }
+        validateHeader(item.getHeader());
+    }
+    private void validateHeader(String itemHeader) {
+        //not empty
+        if (itemHeader == null || itemHeader.trim().isEmpty()) {
+            throw new IllegalArgumentException("Item header must not be empty!");
+        }
+
+        //header length
+        if (itemHeader.length() > MAX_HEADER_LENGTH) {
+            throw new IllegalArgumentException("Item header must be 100 characters or less!");
+        }
+
+        //no duplicates
+//        if (todos.stream().anyMatch(todo -> todo.getHeader().equals(itemHeader))) {
+//            throw new DuplicateKeyException("There's already a task with header \"" + itemHeader + "\"!");
+//        }
+
+        //no errors, return
+    }
+
+    public List<Item> searchItems(String query,List<Item> todos) {
+        return searchItems(item -> item.getHeader().contains(query), todos);
+    }
+
+    public List<Item> searchItems(Predicate<Item> searchFunc, List<Item> todos) {
+        return todos.stream().filter(searchFunc).toList();
+    }
+
+    public Item getItemById(Long id, List<Item> todos) {
+        if (id == null) {
+            return null;
+        }
+        try {
+            return todos.stream().filter(i -> id.equals(i.getId())).findFirst().get();
+        } catch (NoSuchElementException nsee) {
+            return null;
+        }
+    }
+
+    public void removeById(Long itemId, List<Item> todos) {
+        Item item = getItemById(itemId, todos);
+        if (item != null) {
+            todos.remove(item);
+        }
     }
 
 }

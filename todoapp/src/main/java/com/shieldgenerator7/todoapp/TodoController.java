@@ -59,7 +59,7 @@ public class TodoController {
         return todoList.getItemById(itemId);
     }
 
-    @DeleteMapping("todos/item/{itemId}")
+    @DeleteMapping("/todos/item/{itemId}")
     public void deleteItem(@PathVariable Long itemId) {
         TodoList todoList = repository.findAll().get(0);
         todoList.removeById(itemId);

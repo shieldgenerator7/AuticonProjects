@@ -265,9 +265,9 @@
          */
         async function deleteTodo(id) {
             try {
-                    { method: 'DELETE' }
                 const response = await fetchLog(
                     `${API_BASE_URL}${API_ENDPOINTS.ITEM}/${id}${API_ENDPOINTS.DELETE}`, 
+                    { method: 'DELETE' }
                 );
 
                 if (!response.ok) {

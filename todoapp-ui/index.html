@@ -237,12 +237,12 @@
          */
         async function completeTodo(id, checkbox) {
             try {
-                    `${API_BASE_URL}${API_ENDPOINTS.ITEM}/${id}${API_ENDPOINTS.COMPLETE}`, 
                 const response = await fetchLog(
+                    `${API_BASE_URL}${API_ENDPOINTS.ITEM}/${id}${API_ENDPOINTS.COMPLETE}?completion=${100}`, 
                     { 
                         method: 'PUT',
                         headers: {
-                            'Content-Type': 'text/plain',
+                            'Content-Type': 'application/json',
                         },
                         body: 100,
                      }

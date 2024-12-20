@@ -68,13 +68,13 @@ public class TodoController {
 
 
     @GetMapping("/todos/item/{itemId}/completion")
-    public int getItemCompletion(@PathVariable Long itemId) {
+    public int getItemCompletion(@PathVariable int itemId) {
         TodoList todoList = repository.findAll().get(0);
-        Item item = todoList.getItemById(itemId);
+        Item item = todoList.getItemById((long)itemId);
         return item.getCompletionStatus();
     }
 
-    @PostMapping("/todos/item/{itemId}/completion")
+    @PutMapping("/todos/item/{itemId}/completion")
     public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) {
         TodoList todoList = repository.findAll().get(0);
         Item item = todoList.getItemById(itemId);

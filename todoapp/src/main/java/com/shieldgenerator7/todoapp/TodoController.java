@@ -121,9 +121,9 @@ public class TodoController {
         }
 
         //no duplicates
-//        if (todos.stream().anyMatch(todo -> todo.getHeader().equals(itemHeader))) {
-//            throw new DuplicateKeyException("There's already a task with header \"" + itemHeader + "\"!");
-//        }
+        if (repository.existsByHeaderIgnoreCase(itemHeader)) {
+            throw new DuplicateKeyException("There's already a task with header \"" + itemHeader + "\"!");
+        }
 
         //no errors, return
     }

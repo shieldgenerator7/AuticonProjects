@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
+    public boolean existsByHeaderIgnoreCase(String header);
     public List<Item> findByHeaderContainingIgnoreCase(String header);
 }

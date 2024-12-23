@@ -46,12 +46,6 @@ public class TodoController {
         return new ResponseEntity<>(todo, HttpStatus.CREATED);
     }
 
-    @GetMapping("/todos/ids")
-    public List<Long> getTodoIds() {
-        return repository.findAll().stream()
-                .map(Item::getId).toList();
-    }
-
     @GetMapping("/todos/search")
     public List<Item> searchTodoIds(@RequestParam(value = "title") String query) {
         System.out.println("======== " + query + " ===============");

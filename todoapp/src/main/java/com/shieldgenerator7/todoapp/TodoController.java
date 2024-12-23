@@ -32,6 +32,7 @@ public class TodoController {
 
     @PostMapping("/todos")
     public String addTodo(@RequestBody Item todo) {
+        printItem(todo);
         try {
             validateHeader(todo);
             repository.save(todo);
@@ -58,6 +59,7 @@ public class TodoController {
     @GetMapping("/todos/item/{itemId}")
     public Item getItem(@PathVariable Long itemId) throws InvalidKeyException {
         Item item = getItemById(itemId);
+        printItem(item);
         return item;
     }
 
@@ -134,6 +136,10 @@ public class TodoController {
 
     public Item getItemById(Long id) throws InvalidKeyException {
         return repository.findById(id).orElseThrow(InvalidKeyException::new);
+    }
+    
+    private void printItem(Item todo){
+        System.out.println(String.format("todo %s, %s, %s", todo.getHeader(), todo.getCompletionStatus(), todo.getPriority()));
     }
 
 }

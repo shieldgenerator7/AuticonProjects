@@ -136,11 +136,4 @@ public class TodoController {
         return repository.findById(id).orElseThrow(InvalidKeyException::new);
     }
 
-    public void removeById(Long itemId, List<Item> todos) {
-        Item item = getItemById(itemId, todos);
-        if (item != null) {
-            todos.remove(item);
-        }
-    }
-
 }

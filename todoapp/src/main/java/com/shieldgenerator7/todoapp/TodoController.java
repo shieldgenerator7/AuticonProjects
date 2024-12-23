@@ -53,10 +53,15 @@ public class TodoController {
     }
 
     @GetMapping("/todos/item/{itemId}")
-    public Item getItem(@PathVariable Long itemId) throws InvalidKeyException {
+    public Item getItem(@PathVariable Long itemId) {
+        try {
         Item item = getItemById(itemId);
         printItem(item);
         return item;
+        }
+        catch(InvalidKeyException ike){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ike.getMessage());
+        }
     }
 
     @DeleteMapping("/todos/item/{itemId}")

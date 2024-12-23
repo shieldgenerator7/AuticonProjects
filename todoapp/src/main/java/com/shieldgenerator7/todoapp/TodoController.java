@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
@@ -55,8 +56,8 @@ public class TodoController {
     }
 
     @GetMapping("/todos/item/{itemId}")
-    public Item getItem(@PathVariable Long itemId) {
-        Item item = getItemById(itemId, repository.findAll());
+    public Item getItem(@PathVariable Long itemId) throws InvalidKeyException {
+        Item item = getItemById(itemId);
         return item;
     }
 
@@ -67,28 +68,28 @@ public class TodoController {
 
 
     @GetMapping("/todos/item/{itemId}/completion")
-    public int getItemCompletion(@PathVariable int itemId) {
-        Item item = getItemById((long)itemId, repository.findAll());
+    public int getItemCompletion(@PathVariable int itemId) throws InvalidKeyException {
+        Item item = getItemById((long)itemId);
         return item.getCompletionStatus();
     }
 
     @PutMapping("/todos/item/{itemId}/completion")
-    public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) {
-        Item item = getItemById(itemId, repository.findAll());
+    public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) throws InvalidKeyException {
+        Item item = getItemById(itemId);
         int completed = item.setCompletionStatus(completionStatus);
         repository.save(item);
         return completed;
     }
 
     @GetMapping("/todos/item/{itemId}/priority")
-    public Priority getItemPriority(@PathVariable Long itemId) {
-        Item item = getItemById(itemId, repository.findAll());
+    public Priority getItemPriority(@PathVariable Long itemId) throws InvalidKeyException {
+        Item item = getItemById(itemId);
         return item.getPriority();
     }
 
     @PutMapping("/todos/item/{itemId}/priority")
-    public void updateItemPriority(@PathVariable Long itemId, @RequestBody Priority priority) {
-        Item item = getItemById(itemId, repository.findAll());
+    public void updateItemPriority(@PathVariable Long itemId, @RequestBody Priority priority) throws InvalidKeyException {
+        Item item = getItemById(itemId);
         item.setPriority(priority);
         repository.save(item);
     }
@@ -131,15 +132,8 @@ public class TodoController {
         return todos.stream().filter(searchFunc).toList();
     }
 
-    public Item getItemById(Long id, List<Item> todos) {
-        if (id == null) {
-            return null;
-        }
-        try {
-            return todos.stream().filter(i -> id.equals(i.getId())).findFirst().get();
-        } catch (NoSuchElementException nsee) {
-            return null;
-        }
+    public Item getItemById(Long id) throws InvalidKeyException {
+        return repository.findById(id).orElseThrow(InvalidKeyException::new);
     }
 
     public void removeById(Long itemId, List<Item> todos) {

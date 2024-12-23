@@ -55,7 +55,7 @@ public class TodoController {
     @GetMapping("/todos/search")
     public List<Item> searchTodoIds(@RequestParam(value = "title") String query) {
         System.out.println("======== " + query + " ===============");
-        return searchItems(query, repository.findAll());
+        return repository.findByHeaderContainingIgnoreCase(query);
     }
 
     @GetMapping("/todos/item/{itemId}")
@@ -126,14 +126,6 @@ public class TodoController {
 //        }
 
         //no errors, return
-    }
-
-    public List<Item> searchItems(String query,List<Item> todos) {
-        return searchItems(item -> item.getHeader().contains(query), todos);
-    }
-
-    public List<Item> searchItems(Predicate<Item> searchFunc, List<Item> todos) {
-        return todos.stream().filter(searchFunc).toList();
     }
 
     public Item getItemById(Long id) throws InvalidKeyException {

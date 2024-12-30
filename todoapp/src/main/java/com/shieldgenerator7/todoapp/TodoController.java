@@ -132,7 +132,7 @@ public class TodoController {
     }
     
     private void printItem(Item todo){
-        System.out.println(String.format("todo %s, %s, %s", todo.getHeader(), todo.getCompletionStatus(), todo.getPriority()));
+        System.out.printf("todo %s, %s, %s%n", todo.getHeader(), todo.getCompletionStatus(), todo.getPriority());
     }
 
 }

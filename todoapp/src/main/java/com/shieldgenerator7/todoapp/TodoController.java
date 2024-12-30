@@ -128,6 +128,10 @@ public class TodoController {
     }
     
     private void printItem(Item todo){
+        if (todo == null){
+            System.out.printf("todo %s", todo);
+            return;
+        }
         System.out.printf("todo %s, %s, %s%n", todo.getHeader(), todo.getCompletionStatus(), todo.getPriority());
     }
 

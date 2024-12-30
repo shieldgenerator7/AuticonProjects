@@ -2,7 +2,6 @@ package com.shieldgenerator7.todoapp;
 
 import com.shieldgenerator7.todoapp.data.Item;
 import com.shieldgenerator7.todoapp.data.Priority;
-import com.shieldgenerator7.todoapp.data.TodoList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -10,11 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.security.InvalidKeyException;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.function.Predicate;
 
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:8000")

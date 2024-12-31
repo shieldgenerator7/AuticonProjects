@@ -134,7 +134,7 @@ public class TodoController {
         return repository.findById(id).orElseThrow(InvalidKeyException::new);
         }
         catch(InvalidKeyException ike){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No item with id: "+id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No item with id: "+id);
         }
     }
     

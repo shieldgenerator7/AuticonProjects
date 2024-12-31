@@ -22,24 +22,35 @@ public class TodoController {
     @Autowired
     ItemRepository repository;
 
+    /**
+     * Returns a list of all todos
+     * @return A list of Item objects
+     */
     @GetMapping("/todos")
     public List<Item> getTodos() {
         return repository.findAll();
     }
 
+    /**
+     * Adds an Item to the list
+     * @param item The Item to add
+     * @return A ResponseEntity that contains the added Item, if it was added
+     * @throws IllegalArgumentException if the Item was null or had an invalid header
+     * @throws DuplicateKeyException if the list already has an Item with the same header
+     */
     @PostMapping("/todos")
-    public ResponseEntity<Item> addTodo(@RequestBody Item todo) {
-        printItem(todo);
+    public ResponseEntity<Item> addTodo(@RequestBody Item item) {
+        printItem(item);
         try {
-            validateHeader(todo);
+            validateHeader(item);
         } catch (IllegalArgumentException iae) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, iae.getMessage());
         } catch (DuplicateKeyException dke) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, dke.getMessage());
         }
 
-        repository.save(todo);
-        return new ResponseEntity<>(todo, HttpStatus.CREATED);
+        repository.save(item);
+        return new ResponseEntity<>(item, HttpStatus.CREATED);
     }
 
     @GetMapping("/todos/search")

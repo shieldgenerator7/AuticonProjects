@@ -53,6 +53,11 @@ public class TodoController {
         return new ResponseEntity<>(item, HttpStatus.CREATED);
     }
 
+    /**
+     * Returns a list of items that have a header that contains the given query, not case-sensitive
+     * @param query The text to search for
+     * @return A list of Item
+     */
     @GetMapping("/todos/search")
     public List<Item> searchTodoIds(@RequestParam(value = "title") String query) {
         System.out.println("======== " + query + " ===============");

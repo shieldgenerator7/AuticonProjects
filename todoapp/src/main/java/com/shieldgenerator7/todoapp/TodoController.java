@@ -64,6 +64,11 @@ public class TodoController {
         return repository.findByHeaderContainingIgnoreCase(query);
     }
 
+    /**
+     * Returns the Item with the given id
+     * @param itemId The item that has the given id
+     * @return The Item with the given id, null if not found
+     */
     @GetMapping("/todos/item/{itemId}")
     public Item getItem(@PathVariable Long itemId) {
         Item item = getItemById(itemId);
@@ -71,34 +76,58 @@ public class TodoController {
         return item;
     }
 
+    /**
+     * Deletes the Item with the given id
+     * @param itemId The id of the Item to delete
+     */
     @DeleteMapping("/todos/item/{itemId}")
     public void deleteItem(@PathVariable Long itemId) {
         repository.deleteById(itemId);
     }
 
-
+    /**
+     * Returns the completion status of the item with the given id
+     * @param itemId The id of the Item
+     * @return The completion status of the Item
+     */
     @GetMapping("/todos/item/{itemId}/completion")
-    public int getItemCompletion(@PathVariable int itemId) throws InvalidKeyException {
+    public int getItemCompletion(@PathVariable int itemId) {
         Item item = getItemById((long)itemId);
         return item.getCompletionStatus();
     }
 
+    /**
+     * Sets the completion status of the item with the given id to the given value
+     * @param itemId The id of the Item
+     * @param completionStatus The completions status to set it to
+     * @return The new current completion status of the Item, between 0 and 100, inclusive
+     */
     @PutMapping("/todos/item/{itemId}/completion")
-    public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) throws InvalidKeyException {
+    public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) {
         Item item = getItemById(itemId);
         int completed = item.setCompletionStatus(completionStatus);
         repository.save(item);
         return completed;
     }
 
+    /**
+     * Returns the priority of the Item with the given id: LOW, MEDIUM, or HIGH
+     * @param itemId The id of the Item
+     * @return The priority of the Item: LOW, MEDIUM, or HIGH
+     */
     @GetMapping("/todos/item/{itemId}/priority")
-    public Priority getItemPriority(@PathVariable Long itemId) throws InvalidKeyException {
+    public Priority getItemPriority(@PathVariable Long itemId) {
         Item item = getItemById(itemId);
         return item.getPriority();
     }
 
+    /**
+     * Sets the priority of the Item with the given id to the given priority
+     * @param itemId The id of the Item
+     * @param priority The priority to set it to
+     */
     @PutMapping("/todos/item/{itemId}/priority")
-    public void updateItemPriority(@PathVariable Long itemId, @RequestBody Priority priority) throws InvalidKeyException {
+    public void updateItemPriority(@PathVariable Long itemId, @RequestBody Priority priority) {
         Item item = getItemById(itemId);
         item.setPriority(priority);
         repository.save(item);
@@ -109,13 +138,31 @@ public class TodoController {
         return "<h1>test list</h1>";
     }
 
-    private void validateHeader(Item item){
+    /**
+     * Validates the header of the given item.
+     * A header is valid if it:
+     * * Has between 1 and 100 characters, inclusive
+     * * Is not a duplicate of another existing item's header
+     * @param item The item that has the header to validate
+     * @throws IllegalArgumentException if the header is invalid
+     * @throws DuplicateKeyException if the header is a duplicate
+     */
+    private void validateHeader(Item item) throws IllegalArgumentException, DuplicateKeyException{
         if (item == null){
             throw new IllegalArgumentException("Item must not be null!");
         }
         validateHeader(item.getHeader());
     }
-    private void validateHeader(String itemHeader) {
+    /**
+     * Validates the given header.
+     * A header is valid if it:
+     * * Has between 1 and 100 characters, inclusive
+     * * Is not a duplicate of another existing item's header
+     * @param itemHeader The header to validate
+     * @throws IllegalArgumentException if the header is invalid
+     * @throws DuplicateKeyException if the header is a duplicate
+     */
+    private void validateHeader(String itemHeader) throws IllegalArgumentException, DuplicateKeyException {
         //not empty
         if (itemHeader == null || itemHeader.trim().isEmpty()) {
             throw new IllegalArgumentException("Item header must not be empty!");
@@ -134,6 +181,12 @@ public class TodoController {
         //no errors, return
     }
 
+    /**
+     * Returns the item with the given id
+     * @param id The id of the item
+     * @return The item with the id
+     * @throws ResponseStatusException with NOT_FOUND if there is not item with the given id
+     */
     public Item getItemById(Long id) {
         try {
         return repository.findById(id).orElseThrow(InvalidKeyException::new);
@@ -142,13 +195,17 @@ public class TodoController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No item with id: "+id);
         }
     }
-    
-    private void printItem(Item todo){
-        if (todo == null){
-            System.out.printf("todo %s", todo);
+
+    /**
+     * Prints the given item to the console for testing purposes
+     * @param item The item to print
+     */
+    private void printItem(Item item){
+        if (item == null){
+            System.out.printf("todo %s", item);
             return;
         }
-        System.out.printf("todo %s, %s, %s%n", todo.getHeader(), todo.getCompletionStatus(), todo.getPriority());
+        System.out.printf("todo %s, %s, %s%n", item.getHeader(), item.getCompletionStatus(), item.getPriority());
     }
 
 }

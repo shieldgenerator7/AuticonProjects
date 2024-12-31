@@ -19,7 +19,6 @@ class TodoListTest {
     void setUp() {
         todoList = new TodoList();
         item = new Item("buy eggs");
-        item._setId(1L);
     }
 
     @Test

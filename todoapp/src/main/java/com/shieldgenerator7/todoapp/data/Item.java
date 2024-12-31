@@ -44,8 +44,4 @@ public class Item {
         completionStatus = Math.min(Math.max(value, 0), 100);
         return completionStatus;
     }
-
-    public void _setId(long l) {
-        this.id = l;
-    }
 }

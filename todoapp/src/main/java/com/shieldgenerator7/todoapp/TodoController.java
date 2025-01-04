@@ -39,18 +39,16 @@ public class TodoController {
      * @throws DuplicateKeyException if the list already has an Item with the same header
      */
     @PostMapping("/todos")
-    public ResponseEntity<Item> addTodo(@RequestBody Item item) {
+    public ResponseEntity<?> addTodo(@RequestBody Item item) {
         printItem(item);
         try {
             validateHeader(item);
-        } catch (IllegalArgumentException iae) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, iae.getMessage());
-        } catch (DuplicateKeyException dke) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, dke.getMessage());
+        } catch (IllegalArgumentException | DuplicateKeyException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
 
         repository.save(item);
-        return new ResponseEntity<>(item, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
     /**

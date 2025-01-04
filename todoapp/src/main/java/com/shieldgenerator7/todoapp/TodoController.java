@@ -79,8 +79,12 @@ public class TodoController {
      * @param itemId The id of the Item to delete
      */
     @DeleteMapping("/todos/item/{itemId}")
-    public void deleteItem(@PathVariable Long itemId) {
+    public ResponseEntity<?> deleteItem(@PathVariable Long itemId) {
+        if (!this.repository.existsById(itemId)){
+            return ResponseEntity.notFound().build();
+        }
         repository.deleteById(itemId);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -101,11 +105,11 @@ public class TodoController {
      * @return The new current completion status of the Item, between 0 and 100, inclusive
      */
     @PutMapping("/todos/item/{itemId}/completion")
-    public int updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) {
+    public ResponseEntity<?> updateItemCompletion(@PathVariable Long itemId, @RequestBody int completionStatus) {
         Item item = getItemById(itemId);
         int completed = item.setCompletionStatus(completionStatus);
         repository.save(item);
-        return completed;
+        return ResponseEntity.ok(item);
     }
 
     /**
@@ -125,10 +129,11 @@ public class TodoController {
      * @param priority The priority to set it to
      */
     @PutMapping("/todos/item/{itemId}/priority")
-    public void updateItemPriority(@PathVariable Long itemId, @RequestBody Priority priority) {
+    public ResponseEntity<?> updateItemPriority(@PathVariable Long itemId, @RequestBody Priority priority) {
         Item item = getItemById(itemId);
         item.setPriority(priority);
         repository.save(item);
+        return ResponseEntity.ok(item);
     }
 
     @GetMapping("/")

@@ -37,7 +37,7 @@ class TodoApplicationTests {
 
     @BeforeEach
     void initTests() {
-        baseURL = "http://localhost:" + port + "/todos";
+        baseURL = "http://localhost:" + port + "/api/todos";
     }
 
     @AfterEach

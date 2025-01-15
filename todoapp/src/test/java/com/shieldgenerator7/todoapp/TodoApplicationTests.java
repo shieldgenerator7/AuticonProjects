@@ -44,12 +44,10 @@ class TodoApplicationTests {
     void cleanupTests() throws JsonProcessingException {
         String urlItem = baseURL + "/item";
         String urlIds = baseURL + "/ids";
-        String idListString = this.restTemplate.getForObject(urlIds, String.class);
-        ObjectMapper mapper = new ObjectMapper();
-        List<Long> idList = mapper.readValue(idListString, new TypeReference<List<Long>>() {
-        });
-        idList.forEach(id -> {
-            this.restTemplate.delete(urlItem + "/" + id);
+        List<Item> items = restTemplate.exchange(baseURL, HttpMethod.GET, null, new ParameterizedTypeReference<List<Item>>() {}).getBody();
+        assertNotNull(items);
+        items.forEach(item -> {
+            this.restTemplate.delete(urlItem + "/" + item.getId());
         });
     }
 

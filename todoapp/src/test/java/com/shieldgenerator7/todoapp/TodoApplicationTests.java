@@ -83,19 +83,25 @@ class TodoApplicationTests {
         String url = baseURL;
 
         //test empty
-        String string = this.restTemplate.getForObject(url, String.class);
-        assertEquals("[]", string);
+        List<Item> items = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Item>>() {}).getBody();
+        assertNotNull(items);
+        assertEquals(0, items.size());
 
         //test add
-        String addedTodo = this.restTemplate.postForObject(url, taskHeader, String.class);
-        assertEquals(taskHeader, addedTodo);
+        Item item = new Item(taskHeader);
+        assertEquals(Priority.LOW, item.getPriority());
+        ResponseEntity<Item> addedTodo = this.restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                new HttpEntity<Item>(item),
+                new ParameterizedTypeReference<Item>(){}
+        );
 
-        List result = this.restTemplate.getForObject(url, List.class);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        ObjectMapper mapper = new ObjectMapper();
-        List<Item> itemList = result.stream().map(item -> mapper.convertValue(item, Item.class)).toList();
-        assertEquals(taskHeader, itemList.get(0).getHeader());
+        //test one added
+        List<Item> items2 = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Item>>() {}).getBody();
+        assertNotNull(items2);
+        assertEquals(1, items2.size());
+        assertEquals(taskHeader, items2.get(0).getHeader());
     }
 
     @Test
